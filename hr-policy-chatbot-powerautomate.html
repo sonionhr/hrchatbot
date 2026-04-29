@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trợ Lý Chính Sách Nhân Sự</title>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #f5f2eb;
+  --surface:   #ffffff;
+  --surface2:  #edeae2;
+  --surface3:  #e4e0d6;
+  --border:    #d8d3c8;
+  --accent:    #1b5e3b;
+  --accent2:   #2d7a52;
+  --accent3:   #52a876;
+  --accentbg:  #e8f4ee;
+  --red:       #b83232;
+  --redbg:     #fbeaea;
+  --amber:     #c87820;
+  --amberbg:   #fef4e0;
+  --text:      #1a1714;
+  --text2:     #5c5650;
+  --text3:     #9e9890;
+  --userbg:    #162e22;
+  --shadow:    0 2px 12px rgba(26,23,20,.06);
+  --shadow2:   0 8px 28px rgba(26,23,20,.10);
+  --radius:    14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Subtle texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(27,94,59,.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(27,94,59,.03) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── HEADER ── */
+header {
+  position: relative;
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  box-shadow: var(--shadow);
+}
+
+.h-logo {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(27,94,59,.3);
+}
+
+.h-logo svg { width: 20px; height: 20px; color: #fff; }
+
+.h-text { flex: 1; }
+
+.h-title {
+  font-family: 'Spectral', serif;
+  font-size: 17px;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.h-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+.h-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text2);
+  padding: 5px 12px;
+  background: var(--surface2);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.sdot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text3);
+  flex-shrink: 0;
+  transition: all .3s;
+}
+
+.sdot.ready  { background: #22c55e; box-shadow: 0 0 7px #22c55e; }
+.sdot.loading { background: var(--amber); box-shadow: 0 0 7px var(--amber); animation: blink 1s infinite; }
+.sdot.error  { background: var(--red); box-shadow: 0 0 7px var(--red); }
+
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.lang-sw {
+  display: flex;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.lbtn {
+  padding: 4px 13px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  font-size: 12px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.lbtn.on {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(27,94,59,.25);
+}
+
+/* ── MAIN ── */
+.main {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── MESSAGES ── */
+.msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  scroll-behavior: smooth;
+}
+
+.msgs::-webkit-scrollbar { width: 4px; }
+.msgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* WELCOME */
+.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px 32px;
+  gap: 20px;
+  animation: fadeUp .6s ease;
+  max-width: 560px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.w-emblem {
+  width: 72px;
+  height: 72px;
+  background: var(--accent);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 8px 24px rgba(27,94,59,.3),
+    0 0 0 8px rgba(27,94,59,.07);
+}
+
+.w-emblem svg { width: 34px; height: 34px; color: #fff; }
+
+.w-title {
+  font-family: 'Spectral', serif;
+  font-size: 26px;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.w-title em {
+  font-style: italic;
+  color: var(--accent2);
+}
+
+.w-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.8;
+  max-width: 380px;
+}
+
+.w-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text3);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 14px;
+  max-width: 380px;
+  width: 100%;
+  text-align: left;
+}
+
+.w-note svg { width: 14px; height: 14px; flex-shrink: 0; color: var(--accent3); }
+
+/* MESSAGES */
+.msg {
+  display: flex;
+  gap: 12px;
+  animation: fadeUp .3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user { flex-direction: row-reverse; align-self: flex-end; max-width: 75%; }
+.msg.bot  { align-self: flex-start; max-width: 85%; }
+.msg.sys  { align-self: center; max-width: 480px; width: 100%; }
+
+.av {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.msg.user .av { background: var(--userbg); color: #fff; }
+.msg.bot  .av { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(27,94,59,.25); }
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 15px;
+  font-size: 14px;
+  line-height: 1.78;
+}
+
+.msg.user .bubble {
+  background: var(--userbg);
+  color: #e8f5ee;
+  border-bottom-right-radius: 4px;
+}
+
+.msg.bot .bubble {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+  box-shadow: var(--shadow);
+}
+
+.msg.sys .bubble {
+  background: var(--amberbg);
+  border: 1.5px solid rgba(200,120,32,.2);
+  color: var(--text);
+  border-radius: 14px;
+  text-align: center;
+  font-size: 13.5px;
+}
+
+/* Markdown rendering in bot bubble */
+.bubble strong { color: var(--accent); font-weight: 600; }
+.bubble em { color: var(--text2); }
+.bubble h3 {
+  font-family: 'Spectral', serif;
+  font-size: 15px;
+  color: var(--text);
+  margin: 10px 0 5px;
+  font-weight: 600;
+}
+.bubble ul { padding-left: 18px; margin: 6px 0; }
+.bubble ol { padding-left: 18px; margin: 6px 0; }
+.bubble li { margin-bottom: 4px; }
+.bubble p  { margin-bottom: 7px; }
+.bubble p:last-child { margin-bottom: 0; }
+.bubble hr { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+.bubble table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+.bubble th { background: var(--surface2); padding: 7px 10px; text-align: left; font-weight: 600; border: 1px solid var(--border); }
+.bubble td { padding: 6px 10px; border: 1px solid var(--border); }
+.bubble code { background: var(--surface2); padding: 2px 6px; border-radius: 5px; font-size: 12.5px; font-family: monospace; }
+
+/* Source pill */
+.src-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text3);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 4px 11px;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
+.src-pill svg { width: 11px; height: 11px; color: var(--accent3); }
+
+/* Step indicator */
+.step-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12.5px;
+  color: var(--text3);
+  padding: 8px 14px;
+  background: var(--surface2);
+  border-radius: 20px;
+  width: fit-content;
+  animation: fadeUp .3s ease;
+}
+
+.step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent3);
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:.4; transform:scale(1); }
+  50%      { opacity:1;  transform:scale(1.4); }
+}
+
+/* Typing dots */
+.typing-wrap {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 15px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+  box-shadow: var(--shadow);
+}
+
+.tdot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent3);
+  border-radius: 50%;
+  animation: td 1.3s infinite;
+  opacity: .4;
+}
+
+.tdot:nth-child(2) { animation-delay: .2s; }
+.tdot:nth-child(3) { animation-delay: .4s; }
+
+@keyframes td {
+  0%,60%,100% { transform:translateY(0); opacity:.4; }
+  30%         { transform:translateY(-6px); opacity:1; }
+}
+
+/* ── INPUT AREA ── */
+.input-area {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 14px 24px 18px;
+  flex-shrink: 0;
+}
+
+.err-bar {
+  display: none;
+  background: var(--redbg);
+  border: 1.5px solid rgba(184,50,50,.2);
+  border-radius: 10px;
+  padding: 9px 13px;
+  font-size: 13px;
+  color: var(--red);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.irow {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.irow:focus-within {
+  border-color: var(--accent2);
+  box-shadow: 0 0 0 3px rgba(27,94,59,.08);
+}
+
+textarea.ci {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  resize: none;
+  max-height: 110px;
+  line-height: 1.6;
+  padding: 2px 0;
+}
+
+textarea.ci::placeholder { color: var(--text3); }
+
+.sbtn {
+  width: 38px;
+  height: 38px;
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: #fff;
+  transition: all .2s;
+}
+
+.sbtn:hover:not(:disabled) {
+  background: var(--accent2);
+  transform: scale(1.05);
+  box-shadow: 0 4px 14px rgba(27,94,59,.3);
+}
+
+.sbtn:disabled {
+  background: var(--surface3);
+  color: var(--text3);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.sbtn svg { width: 16px; height: 16px; }
+
+.ihint {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: center;
+  margin-top: 9px;
+}
+
+/* New chat button */
+.new-chat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-weight: 500;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.new-chat:hover {
+  border-color: var(--accent2);
+  color: var(--accent);
+  background: var(--accentbg);
+}
+
+.new-chat svg { width: 13px; height: 13px; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="h-logo">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>
+    </svg>
+  </div>
+  <div class="h-text">
+    <div class="h-title">Trợ Lý Chính Sách Nhân Sự</div>
+    <div class="h-sub" id="hSub">Đang kết nối...</div>
+  </div>
+  <div class="h-right">
+    <div class="status-pill">
+      <div class="sdot loading" id="sdot"></div>
+      <span id="stxt">Đang tải</span>
+    </div>
+    <button class="new-chat" onclick="newChat()" title="Cuộc trò chuyện mới">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+      </svg>
+      Mới
+    </button>
+    <div class="lang-sw">
+      <button class="lbtn on" id="btnVI" onclick="setLang('vi')">VI</button>
+      <button class="lbtn"    id="btnEN" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="msgs" id="msgs">
+    <!-- Welcome screen injected by JS -->
+  </div>
+
+  <div class="input-area">
+    <div class="err-bar" id="errBar"></div>
+    <div class="irow">
+      <textarea
+        class="ci" id="ci" rows="1"
+        placeholder="Nhập câu hỏi về chính sách công ty..."
+        onkeydown="onKey(event)"
+        oninput="resize(this)"
+        disabled
+      ></textarea>
+      <button class="sbtn" id="sbtn" onclick="send()" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/>
+        </svg>
+      </button>
+    </div>
+    <div class="ihint" id="ihint">Nhấn Enter để gửi · Shift+Enter xuống dòng</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIGURATION
+// Only value needed in HTML — PA trigger URL
+// All API keys live in SharePoint APIkey List (server side)
+// ═══════════════════════════════════════════════════════
+const PA_ENDPOINT = 'https://default3930abb206f14a83933f1b805a5f73.09.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d9a11f2e42724db9ab95776ba9bca75e/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xcj4e5gYD0GtkuXZfR8kVLjeXQveu1SQkJ4BWyJ7esI';
+
+// ═══════════════════════════════════════════════════════
+// STATE — minimal, clean
+// ═══════════════════════════════════════════════════════
+const state = {
+  lang:  'vi',   // Vietnamese default
+  busy:  false,
+  ready: false
+};
+
+// ═══════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════
+window.onload = () => {
+  renderWelcome();
+
+  // Validate PA endpoint is configured
+  if (!PA_ENDPOINT || PA_ENDPOINT.includes('YOUR_POWER_AUTOMATE')) {
+    setStatus('error', 'Chưa cấu hình');
+    document.getElementById('hSub').textContent = 'Cần cấu hình PA_ENDPOINT trong file HTML';
+    showErr('PA_ENDPOINT chưa được cấu hình. IT vui lòng cập nhật giá trị PA_ENDPOINT trong file HTML.');
+    return;
+  }
+
+  // Ready
+  setStatus('ready', 'Sẵn sàng');
+  document.getElementById('hSub').textContent = 'Kết nối qua Power Automate · SharePoint';
+  document.getElementById('ci').disabled   = false;
+  document.getElementById('sbtn').disabled = false;
+  state.ready = true;
+};
+
+// ═══════════════════════════════════════════════════════
+// SEND — the entire logic in one clean function
+// Browser only knows: send question, receive answer
+// All routing, fetching, AI logic → Power Automate
+// ═══════════════════════════════════════════════════════
+async function send() {
+  if (!state.ready || state.busy) return;
+
+  const inp = document.getElementById('ci');
+  const question = inp.value.trim();
+  if (!question) return;
+
+  // Hide welcome, show question
+  document.getElementById('welcomeEl')?.remove();
+  addMsg('user', question);
+  inp.value = '';
+  resize(inp);
+  hideErr();
+
+  state.busy = true;
+  document.getElementById('sbtn').disabled = true;
+  setStatus('loading', 'Đang xử lý...');
+
+  // Show step indicator
+  const stepEl = showStep(
+    state.lang === 'vi'
+      ? 'Đang tìm kiếm trong tài liệu chính sách...'
+      : 'Searching policy documents...'
+  );
+
+  try {
+    // ── SINGLE CALL TO POWER AUTOMATE ──
+    // PA handles everything:
+    // 1. Reads APIkey List from SharePoint (Gemini key)
+    // 2. Reads HR_chatbot_routing List (descriptions + file addresses)
+    // 3. Calls Gemini to route question → find correct .md file address
+    // 4. Fetches .md file content from SharePoint
+    // 5. Calls Gemini to answer from content
+    // 6. Returns answer
+    const res = await fetch(PA_ENDPOINT, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        question: question,
+        language: detectLanguage(question)
+      })
+    });
+
+    stepEl.remove();
+
+    if (!res.ok) {
+      throw new Error(
+        state.lang === 'vi'
+          ? `Lỗi kết nối Power Automate (${res.status}). Vui lòng thử lại.`
+          : `Power Automate connection error (${res.status}). Please try again.`
+      );
+    }
+
+    const data = await res.json();
+
+    // ── HANDLE RESPONSE STATUSES ──
+    if (data.status === 'not_found') {
+      showNotFound();
+      return;
+    }
+
+    if (data.status === 'error') {
+      throw new Error(data.message || 'Power Automate returned an error.');
+    }
+
+    // ── SUCCESS ──
+    addMsg('bot', data.answer, data.category);
+    setStatus('ready', 'Sẵn sàng');
+
+  } catch (e) {
+    stepEl?.remove();
+    hideTyping();
+    showErr(e.message);
+    setStatus('ready', 'Sẵn sàng');
+    console.error(e);
+  }
+
+  state.busy = false;
+  document.getElementById('sbtn').disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════
+// LANGUAGE DETECTION
+// Auto-detects Vietnamese from question characters
+// Overrides the header toggle
+// ═══════════════════════════════════════════════════════
+function detectLanguage(question) {
+  const hasVI = /[àáâãèéêìíòóôõùúýăđơưạảấầẩẫậắằẳẵặẹẻẽếềểễệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚÝĂĐƠƯ]/.test(question);
+  return hasVI ? 'vi' : state.lang;
+}
+
+// ═══════════════════════════════════════════════════════
+// "NOT FOUND" — question outside policy scope
+// ═══════════════════════════════════════════════════════
+function showNotFound() {
+  const wrap = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'msg sys';
+
+  const msg = state.lang === 'vi'
+    ? 'Câu hỏi này không thuộc phạm vi tài liệu chính sách hiện có. Vui lòng liên hệ bộ phận Nhân Sự để được hỗ trợ.'
+    : 'This question is outside our current policy documents. Please contact HR directly for assistance.';
+
+  const icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;flex-shrink:0;color:var(--amber)"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>`;
+
+  d.innerHTML = `<div class="bubble" style="display:flex;align-items:flex-start;gap:9px;text-align:left">${icon}<span>${msg}</span></div>`;
+  wrap.appendChild(d);
+  wrap.scrollTop = wrap.scrollHeight;
+  setStatus('ready', 'Sẵn sàng');
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDER WELCOME
+// ═══════════════════════════════════════════════════════
+function renderWelcome() {
+  const wrap = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'welcome';
+  d.id = 'welcomeEl';
+
+  const titleVI = `Xin chào! Tôi có thể<br>giúp gì cho bạn về<br><em>chính sách công ty?</em>`;
+  const titleEN = `Hello! How can I help<br>you with <em>company policy?</em>`;
+
+  const descVI = `Hãy đặt câu hỏi bằng tiếng Việt hoặc tiếng Anh. Tôi sẽ tìm câu trả lời từ tài liệu chính sách nội bộ của công ty.`;
+  const descEN = `Ask your question in Vietnamese or English. I will find the answer from official company policy documents.`;
+
+  const noteVI = `Tôi chỉ trả lời dựa trên tài liệu chính sách chính thức. Câu hỏi ngoài phạm vi sẽ được thông báo.`;
+  const noteEN = `I only answer from official policy documents. Questions outside scope will be flagged.`;
+
+  d.innerHTML = `
+    <div class="w-emblem">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z"/>
+      </svg>
+    </div>
+    <div class="w-title" id="wTitle">${state.lang === 'vi' ? titleVI : titleEN}</div>
+    <div class="w-desc"  id="wDesc">${state.lang === 'vi' ? descVI  : descEN}</div>
+    <div class="w-note">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/>
+      </svg>
+      <span id="wNote">${state.lang === 'vi' ? noteVI : noteEN}</span>
+    </div>`;
+
+  wrap.appendChild(d);
+}
+
+// ═══════════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════════
+function addMsg(role, text, src) {
+  const wrap = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = `msg ${role}`;
+
+  const av = role === 'user' ? '👤' : '🤖';
+
+  const srcHtml = src && role === 'bot' ? `
+    <div class="src-pill">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>
+      </svg>
+      Nguồn: ${src}
+    </div>` : '';
+
+  d.innerHTML = `
+    <div class="av">${av}</div>
+    <div>
+      <div class="bubble">${fmt(text)}</div>
+      ${srcHtml}
+    </div>`;
+
+  wrap.appendChild(d);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function showStep(label) {
+  const wrap = document.getElementById('msgs');
+  const d = document.createElement('div');
+  d.className = 'msg bot';
+  d.innerHTML = `
+    <div class="av">🤖</div>
+    <div class="step-row">
+      <div class="step-dot"></div>
+      ${label}
+    </div>`;
+  wrap.appendChild(d);
+  wrap.scrollTop = wrap.scrollHeight;
+  return d;
+}
+
+function showTyping() {
+  const wrap = document.getElementById('msgs');
+  const d = document.createElement('div');
+  const id = 'ty_' + Date.now();
+  d.id = id;
+  d.className = 'msg bot';
+  d.innerHTML = `
+    <div class="av">🤖</div>
+    <div class="typing-wrap">
+      <div class="tdot"></div>
+      <div class="tdot"></div>
+      <div class="tdot"></div>
+    </div>`;
+  wrap.appendChild(d);
+  wrap.scrollTop = wrap.scrollHeight;
+  return id;
+}
+
+function hideTyping() {
+  document.querySelectorAll('.typing-wrap').forEach(e => e.closest('.msg')?.remove());
+}
+
+function showErr(m) {
+  const e = document.getElementById('errBar');
+  e.textContent = m;
+  e.style.display = 'block';
+}
+
+function hideErr() {
+  document.getElementById('errBar').style.display = 'none';
+}
+
+function setStatus(type, label) {
+  const dot = document.getElementById('sdot');
+  const txt = document.getElementById('stxt');
+  dot.className = `sdot ${type}`;
+  txt.textContent = label;
+}
+
+// Markdown → HTML renderer
+function fmt(t) {
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/^\| (.+) \|$/gm, row => {
+      if (row.includes('---')) return '';
+      const cells = row.replace(/^\| | \|$/g,'').split(' | ');
+      return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+    })
+    .replace(/(<tr>[\s\S]*?<\/tr>)/g,'<table>$1</table>')
+    .replace(/^[-•]\s(.+)$/gm,'<li>$1</li>')
+    .replace(/^(\d+)\.\s(.+)$/gm,'<li>$2</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/\n/g,'<br>')
+    .replace(/^([^<].+)$/m,'<p>$1</p>');
+}
+
+// ═══════════════════════════════════════════════════════
+// LANGUAGE TOGGLE
+// VI is default — reflects Vietnamese-first priority
+// ═══════════════════════════════════════════════════════
+function setLang(l) {
+  state.lang = l;
+  document.getElementById('btnVI').classList.toggle('on', l === 'vi');
+  document.getElementById('btnEN').classList.toggle('on', l === 'en');
+
+  const isVI = l === 'vi';
+
+  document.getElementById('ihint').textContent = isVI
+    ? 'Nhấn Enter để gửi · Shift+Enter xuống dòng'
+    : 'Press Enter to send · Shift+Enter for new line';
+
+  document.getElementById('ci').placeholder = isVI
+    ? 'Nhập câu hỏi về chính sách công ty...'
+    : 'Ask about any company policy...';
+
+  // Update welcome screen if still visible
+  const wTitle = document.getElementById('wTitle');
+  const wDesc  = document.getElementById('wDesc');
+  const wNote  = document.getElementById('wNote');
+  if (wTitle) wTitle.innerHTML = isVI
+    ? `Xin chào! Tôi có thể<br>giúp gì cho bạn về<br><em>chính sách công ty?</em>`
+    : `Hello! How can I help<br>you with <em>company policy?</em>`;
+  if (wDesc) wDesc.textContent = isVI
+    ? 'Hãy đặt câu hỏi bằng tiếng Việt hoặc tiếng Anh. Tôi sẽ tìm câu trả lời từ tài liệu chính sách nội bộ của công ty.'
+    : 'Ask your question in Vietnamese or English. I will find the answer from official company policy documents.';
+  if (wNote) wNote.textContent = isVI
+    ? 'Tôi chỉ trả lời dựa trên tài liệu chính sách chính thức. Câu hỏi ngoài phạm vi sẽ được thông báo.'
+    : 'I only answer from official policy documents. Questions outside scope will be flagged.';
+}
+
+// ═══════════════════════════════════════════════════════
+// NEW CHAT
+// ═══════════════════════════════════════════════════════
+function newChat() {
+  document.getElementById('msgs').innerHTML = '';
+  renderWelcome();
+  hideErr();
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════
+function onKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    send();
+  }
+}
+
+function resize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+}
+</script>
+</body>
+</html>
