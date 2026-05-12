@@ -126,6 +126,27 @@
   /* ── Note box ── */
   .note { background: #FFFBEA; border-left: 4px solid #F59E0B; border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 12px; color: #7B5700; margin-top: 10px; }
 
+  /* ── FAQ ── */
+  .faq-group { margin-bottom: 20px; }
+  .faq-group-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--blue); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--blue-lt); }
+  .faq-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; overflow: hidden; }
+  .faq-q { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: #fff; cursor: pointer; }
+  .faq-q:hover { background: var(--blue-lt); }
+  .faq-badge { min-width: 22px; height: 22px; background: var(--blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+  .faq-question { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+  .faq-chevron { color: var(--muted); font-size: 12px; margin-left: auto; transition: transform .2s; flex-shrink: 0; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-a { display: none; padding: 10px 14px 14px 46px; font-size: 13px; color: var(--text); background: var(--grey); border-top: 1px solid var(--border); line-height: 1.7; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-a table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+  .faq-a th { background: var(--blue); color: #fff; padding: 6px 10px; text-align: left; font-weight: 600; }
+  .faq-a td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  .faq-a tr:last-child td { border-bottom: none; }
+  .faq-a tr:nth-child(even) td { background: #fff; }
+  .faq-a ul { margin: 6px 0 0 14px; }
+  .faq-a li { margin-bottom: 3px; }
+  .faq-a .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin: 2px 2px 2px 0; }
+
   /* ── Footer ── */
   .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 10px; }
 </style>
@@ -353,7 +374,241 @@
     </div>
   </div>
 
+
+  <!-- FAQ NHÂN VIÊN MỚI -->
+  <div class="section-header"><h2>❓ Câu hỏi thường gặp — Nhân viên mới</h2></div>
+  <div class="grid-2">
+
+    <!-- Cột trái -->
+    <div>
+      <div class="faq-group">
+        <div class="faq-group-title">🏭 Về Công ty</div>
+
+        <div class="faq-item open">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Sonion là công ty gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Công ty TNHH Sonion Việt Nam được thành lập ngày <strong>01/11/2005</strong>, với <strong>100% vốn đầu tư từ Đan Mạch</strong>. Đây là nhà máy hàng đầu thế giới trong lĩnh vực linh kiện âm thanh siêu nhỏ và chính xác cao.<br><br>
+            <strong>Tầm nhìn:</strong> <em>"Chúng ta giúp thế giới lắng nghe."</em>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Sonion sản xuất gì? Phục vụ ngành nào?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Sản phẩm</th><th>Tên tiếng Anh</th><th>Ứng dụng</th></tr>
+              <tr><td>Bộ phát âm thanh</td><td>Receiver</td><td>Máy trợ thính, tai nghe cao cấp</td></tr>
+              <tr><td>Bộ thu âm thanh</td><td>Microphone</td><td>Máy trợ thính, thiết bị âm thanh</td></tr>
+              <tr><td>Linh kiện vi cơ điện tử</td><td>MMD</td><td>Thiết bị trợ thính thế hệ mới</td></tr>
+            </table>
+            Khách hàng là các thương hiệu thiết bị trợ thính hàng đầu thế giới. Sản phẩm yêu cầu độ chính xác cực cao — đây là lý do có <strong>phòng sạch (clean room)</strong>.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Giá trị cốt lõi của Sonion là gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Giá trị</th><th>Ý nghĩa</th></tr>
+              <tr><td>Hướng đến tương lai</td><td>Suy nghĩ dài hạn, cải tiến liên tục</td></tr>
+              <tr><td>Chủ động hỗ trợ</td><td>Sẵn sàng giúp đỡ đồng nghiệp</td></tr>
+              <tr><td>Trách nhiệm</td><td>Chịu trách nhiệm với công việc</td></tr>
+              <tr><td>Thúc đẩy</td><td>Nỗ lực đạt kết quả tốt hơn</td></tr>
+              <tr><td>Phản ứng linh hoạt</td><td>Thích ứng nhanh với thay đổi</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tại Sonion có những bộ phận nào?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Bộ phận</th><th>Vai trò</th></tr>
+              <tr><td><strong>Sản xuất</strong></td><td>Trực tiếp tạo ra sản phẩm — nơi DL làm việc</td></tr>
+              <tr><td><strong>Chất lượng</strong></td><td>Kiểm soát chất lượng sản phẩm</td></tr>
+              <tr><td><strong>Bảo trì / Kỹ thuật</strong></td><td>Vận hành và bảo dưỡng máy móc</td></tr>
+              <tr><td><strong>Nhân sự (HR)</strong></td><td>Hợp đồng, lương thưởng, bảo hiểm</td></tr>
+              <tr><td><strong>Tài chính</strong></td><td>Kế toán, kiểm soát chi phí</td></tr>
+              <tr><td><strong>Cải tiến (CIM)</strong></td><td>5S, Kaizen, cải tiến quy trình</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">💻 Hệ thống & Công cụ</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Hệ thống Cadena là gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Cadena là hệ thống quản lý nhân sự của Sonion, dùng để:
+            <ul>
+              <li>Xem và kiểm tra <strong>bảng chấm công</strong> hàng ngày</li>
+              <li>Nộp và hủy <strong>đơn nghỉ phép</strong></li>
+              <li>Xem <strong>phiếu lương</strong> hàng tháng</li>
+              <li>Nộp <strong>đơn thôi việc</strong></li>
+            </ul>
+            <br><strong>Truy cập:</strong> cadena.sonion.com/Login.aspx<br>
+            <strong>Nhân viên DL:</strong> Dùng <strong>máy trạm dọc hành lang</strong> trong nhà máy.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Cổng Hỗ trợ Nhân sự là gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Cổng Hỗ trợ Nhân sự (HR Request Center) là nơi gửi các yêu cầu HR:
+            <ul>
+              <li>Thay đổi thông tin cá nhân, tài khoản ngân hàng</li>
+              <li>Đề nghị nhân sự (cấp giấy tờ, đăng ký người phụ thuộc...)</li>
+              <li>Thắc mắc lương, yêu cầu hành chính khác</li>
+            </ul>
+            <br>Truy cập qua <strong>Cadena</strong> hoặc <strong>Máy Trạm</strong> tại nhà máy.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột phải -->
+    <div>
+      <div class="faq-group">
+        <div class="faq-group-title">⏰ Công việc & Thời gian</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi được trả lương khi nào?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <ul>
+              <li><strong>Lương chính:</strong> Ngày <strong>5 tháng sau</strong> — tài khoản Vietcombank hoặc HSBC</li>
+              <li><strong>Tạm ứng:</strong> Ngày <strong>20 hàng tháng</strong> — 1.200.000 đ nếu làm đủ 9 ngày công từ ngày 1–15</li>
+              <li>Xem phiếu lương điện tử trên <strong>Cadena</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi được hưởng những phúc lợi gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Phúc lợi</th><th>Mức</th></tr>
+              <tr><td>BHXH + BHYT + BHTN</td><td>Từ tháng thử việc đầu tiên</td></tr>
+              <tr><td>Bảo hiểm tai nạn 24/7</td><td>Toàn bộ nhân viên</td></tr>
+              <tr><td>Phụ cấp sinh hoạt</td><td><strong>400.000 đ</strong>/tháng</td></tr>
+              <tr><td>Thưởng chuyên cần</td><td><strong>500.000 đ</strong>/tháng</td></tr>
+              <tr><td>Quà lễ / sinh nhật</td><td><strong>200.000 đ</strong>/dịp</td></tr>
+              <tr><td>Du lịch hàng năm</td><td>1 lần/năm</td></tr>
+              <tr><td>Phép năm</td><td>12 ngày (+1 mỗi 3 năm thâm niên)</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi cần mặc gì khi đi làm?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <ul>
+              <li>Mặc <strong>đồng phục</strong> đầy đủ do công ty cấp phát</li>
+              <li>Đeo <strong>thẻ nhân viên</strong> ở vị trí dễ nhìn</li>
+              <li>Mang <strong>giày bảo hộ ESD (giày xám)</strong> — chỉ dùng trong nhà máy</li>
+              <li>Phòng sạch: mặc thêm smock, mũ và dụng cụ theo quy định</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Lương OT và ca đêm có tính thuế TNCN không?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Không.</strong> Theo Luật số 109/2025/QH15 (áp dụng từ kỳ tính thuế 2026), toàn bộ tiền làm thêm giờ (OT) và tiền lương ca đêm <strong>không tính thuế TNCN</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">⚖️ Nội quy & Kỷ luật</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Những điều cần biết trong khu vực làm việc?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <ul>
+              <li>❌ Không dùng điện thoại cá nhân trong khu sản xuất → ra <strong>Calling Place</strong></li>
+              <li>❌ Không ăn uống, ngủ hoặc chơi game trong khu làm việc</li>
+              <li>❌ Không đưa tài sản công ty ra ngoài</li>
+              <li>✅ Khóa tủ locker, không để đồ giá trị trên 50.000 đ trong tủ</li>
+              <li>✅ Hút thuốc đúng khu vực quy định</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Bị kỷ luật thì ảnh hưởng gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Mức</th><th>Hình thức</th></tr>
+              <tr><td><strong>A</strong></td><td>Khiển trách + thi hành 1 tháng</td></tr>
+              <tr><td><strong>B</strong></td><td>Khiển trách + hoãn tăng lương 3 tháng</td></tr>
+              <tr><td><strong>C</strong></td><td>Khiển trách + hoãn tăng lương 6 tháng</td></tr>
+              <tr><td><strong>D</strong></td><td>Sa thải</td></tr>
+            </table>
+            <br>Nhân viên đang bị kỷ luật <strong>không được xét tăng lương</strong> và có thể giảm/mất thưởng.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 <div class="footer">Sonion Việt Nam — HR Wiki · 01-Onboarding · Trang 1: Hướng dẫn Nhân viên DL Mới · Cập nhật 2026</div>
+
+<script>
+function toggle(el) {
+  const item = el.closest('.faq-item');
+  item.classList.toggle('open');
+}
+</script>
 </body>
 </html>
