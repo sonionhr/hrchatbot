@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,7 +149,48 @@
 
   /* ── Footer ── */
   .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 10px; }
+
+  /* ── Responsive (tablet / mobile) ── */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 768px) {
+    .header { padding: 16px 20px; flex-wrap: wrap; gap: 10px; }
+    .header-badge { margin-left: 0; }
+    .container { padding: 18px 12px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .col-span-2 { grid-column: span 1; }
+    .card { padding: 16px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 7px 8px; }
+    .pay-timeline { flex-wrap: wrap; gap: 16px 10px; }
+    .pay-step { flex: 1 1 40%; }
+    .pay-step::after { display: none; }
+    .ot-label { width: 100px; font-size: 11px; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 13px; }
+    .header-logo { font-size: 22px; }
+    .header-text h1 { font-size: 16px; }
+    .header-text p { font-size: 11px; }
+    .header-badge { font-size: 11px; padding: 5px 12px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .stat-val { font-size: 20px; }
+    .card-title { font-size: 12px; }
+    table { font-size: 11px; }
+    th, td { padding: 6px 7px; }
+    .contact-item { flex-wrap: wrap; }
+    .contact-num { width: 100%; padding-left: 28px; }
+  }
 </style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_dlc_DocId msdt:dt="string">M7AD5DXWA54W-1745450731-1409</mso:_dlc_DocId>
+<mso:_dlc_DocIdItemGuid msdt:dt="string">90010dc8-ffc2-4164-957a-6795c0f7964a</mso:_dlc_DocIdItemGuid>
+<mso:_dlc_DocIdUrl msdt:dt="string">https://sonion.sharepoint.com/departments/hr/vn/_layouts/15/DocIdRedir.aspx?ID=M7AD5DXWA54W-1745450731-1409, M7AD5DXWA54W-1745450731-1409</mso:_dlc_DocIdUrl>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
 </head>
 <body>
 
@@ -261,7 +302,7 @@
           <tr><td>Trợ cấp sinh hoạt</td><td><strong>400.000 đ</strong>/tháng</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Quà lễ / sinh nhật</td><td><strong>200.000 đ</strong>/dịp</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Thưởng chuyên cần</td><td><strong>500.000 đ</strong>/tháng</td><td>Làm việc đủ đến cuối tháng</td></tr>
-          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Nhân viên chính thức; Yield & Productivity</td></tr>
+          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Tính từ ngày bắt đầu làm việc (kể cả thử việc); Yield & Productivity</td></tr>
         </tbody>
       </table>
     </div>
@@ -366,11 +407,9 @@
     </div>
     <div class="card">
       <div class="card-title"><span class="icon">📞</span> Liên hệ HR</div>
-      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng / Hợp đồng thử việc</span><span class="contact-num">028 3736 2019</span></div>
-      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức / Bảo hiểm</span><span class="contact-num">028 3736 2018</span></div>
-      <div class="contact-item"><span class="contact-icon">💵</span><span class="contact-topic">Lương</span><span class="contact-num">028 3736 2021</span></div>
-      <div class="contact-item"><span class="contact-icon">🔑</span><span class="contact-topic">Tủ locker</span><span class="contact-num">028 3736 2483</span></div>
-      <div class="contact-item"><span class="contact-icon">💻</span><span class="contact-topic">Yêu cầu chung</span><span class="contact-num">Cadena / HR Helpdesk · Máy Trạm</span></div>
+      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng & hợp đồng thử việc</span><span class="contact-num">028 3736 2019 / 0903 345 921</span></div>
+      <div class="contact-item"><span class="contact-icon">🏥</span><span class="contact-topic">Y tế – Phòng sữa mẹ</span><span class="contact-num">028 3736 2483</span></div>
+      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức, bảo hiểm & lương</span><span class="contact-num">028 3736 2018 / 028 3736 2021 / 028 3736 2105</span></div>
     </div>
   </div>
 
