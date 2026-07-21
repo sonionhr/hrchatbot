@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,7 +149,48 @@
 
   /* ── Footer ── */
   .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 10px; }
+
+  /* ── Responsive (tablet / mobile) ── */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 768px) {
+    .header { padding: 16px 20px; flex-wrap: wrap; gap: 10px; }
+    .header-badge { margin-left: 0; }
+    .container { padding: 18px 12px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .col-span-2 { grid-column: span 1; }
+    .card { padding: 16px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 7px 8px; }
+    .pay-timeline { flex-wrap: wrap; gap: 16px 10px; }
+    .pay-step { flex: 1 1 40%; }
+    .pay-step::after { display: none; }
+    .ot-label { width: 100px; font-size: 11px; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 13px; }
+    .header-logo { font-size: 22px; }
+    .header-text h1 { font-size: 16px; }
+    .header-text p { font-size: 11px; }
+    .header-badge { font-size: 11px; padding: 5px 12px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .stat-val { font-size: 20px; }
+    .card-title { font-size: 12px; }
+    table { font-size: 11px; }
+    th, td { padding: 6px 7px; }
+    .contact-item { flex-wrap: wrap; }
+    .contact-num { width: 100%; padding-left: 28px; }
+  }
 </style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_dlc_DocId msdt:dt="string">M7AD5DXWA54W-1745450731-1409</mso:_dlc_DocId>
+<mso:_dlc_DocIdItemGuid msdt:dt="string">90010dc8-ffc2-4164-957a-6795c0f7964a</mso:_dlc_DocIdItemGuid>
+<mso:_dlc_DocIdUrl msdt:dt="string">https://sonion.sharepoint.com/departments/hr/vn/_layouts/15/DocIdRedir.aspx?ID=M7AD5DXWA54W-1745450731-1409, M7AD5DXWA54W-1745450731-1409</mso:_dlc_DocIdUrl>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
 </head>
 <body>
 
@@ -250,11 +291,6 @@
         </div>
       </div>
       <div class="note">💡 Tạm ứng ngày 20 yêu cầu ≥ 9 ngày công từ ngày 1–15 tháng đó.</div>
-      <div style="margin-top:10px;padding:9px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:#7F1D1D">
-        ⚠️ <strong>Nhân viên mới — tháng đầu tiên:</strong> Không có tạm ứng.<br>
-        • Vào làm ngày <strong>1–24</strong>: nhận lương tháng đầu vào ngày 5 tháng sau.<br>
-        • Vào làm từ ngày <strong>25 trở đi</strong>: nhận lương tháng đầu vào kỳ lương của <strong>tháng thứ hai tiếp theo</strong>.
-      </div>
     </div>
 
     <!-- Phụ cấp & Thưởng -->
@@ -266,7 +302,7 @@
           <tr><td>Trợ cấp sinh hoạt</td><td><strong>400.000 đ</strong>/tháng</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Quà lễ / sinh nhật</td><td><strong>200.000 đ</strong>/dịp</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Thưởng chuyên cần</td><td><strong>500.000 đ</strong>/tháng</td><td>Làm việc đủ đến cuối tháng</td></tr>
-          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Nhân viên chính thức; Yield & Productivity</td></tr>
+          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Tính từ ngày bắt đầu làm việc (kể cả thử việc); Yield & Productivity</td></tr>
         </tbody>
       </table>
     </div>
@@ -293,9 +329,6 @@
       <div class="ot-bar">
         <div class="ot-label">Ca đêm (22:00–06:00)</div>
         <div class="ot-track"><div class="ot-fill p150" style="background:#6366F1">150%</div></div>
-      </div>
-      <div style="margin:8px 0;padding:9px 12px;background:#EDE9FE;border-radius:8px;font-size:12px;color:#5B21B6">
-        🌙 <strong>Lương ca đêm = 150%</strong> — tức là bạn nhận thêm <strong>50%</strong> so với lương bình thường. Sonion trả cao hơn quy định Luật Lao động (luật yêu cầu tối thiểu +30%).
       </div>
       <div class="note">⚠️ Tối thiểu 1 giờ/ngày thường · Tối đa 4 giờ/ngày thường · 12 giờ/ngày nghỉ</div>
     </div>
@@ -367,41 +400,16 @@
       <div class="disc-row"><div class="disc-badge disc-B">B</div><div class="disc-text">Khiển trách + hoãn tăng lương <strong>3 tháng</strong></div></div>
       <div class="disc-row"><div class="disc-badge disc-C">C</div><div class="disc-text">Khiển trách + hoãn tăng lương <strong>6 tháng</strong></div></div>
       <div class="disc-row"><div class="disc-badge disc-D">D</div><div class="disc-text"><strong>Sa thải</strong></div></div>
+      <div class="note" style="margin-top:14px">
+        📵 Không dùng điện thoại · Không ăn uống · Không ngủ trong khu vực làm việc.
+        Mặc đồng phục đầy đủ · Đeo thẻ · Giày xám chỉ dùng trong nhà máy.
+      </div>
     </div>
     <div class="card">
       <div class="card-title"><span class="icon">📞</span> Liên hệ HR</div>
-      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng / Hợp đồng thử việc</span><span class="contact-num">028 3736 2019</span></div>
-      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức / Bảo hiểm</span><span class="contact-num">028 3736 2018</span></div>
-      <div class="contact-item"><span class="contact-icon">💵</span><span class="contact-topic">Lương</span><span class="contact-num">028 3736 2021</span></div>
-      <div class="contact-item"><span class="contact-icon">🔑</span><span class="contact-topic">Tủ locker</span><span class="contact-num">028 3736 2483</span></div>
-      <div class="contact-item"><span class="contact-icon">💻</span><span class="contact-topic">Yêu cầu chung</span><span class="contact-num">Cadena / HR Helpdesk · Máy Trạm</span></div>
-    </div>
-  </div>
-
-  <!-- QUY ĐỊNH LÀM VIỆC -->
-  <div class="card" style="margin-top:20px;border-left:4px solid var(--orange)">
-    <div class="card-title"><span class="icon">📋</span> Quy định Làm việc — Cần nắm rõ</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#FEF9C3;border-radius:8px">
-        <div style="font-size:20px;flex-shrink:0">📅</div>
-        <div><strong>Không làm việc 7 ngày liên tục</strong> — Sau khi làm đủ 6 ngày, bắt buộc phải nghỉ ít nhất 1 ngày.</div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#FEF3E8;border-radius:8px">
-        <div style="font-size:20px;flex-shrink:0">🕐</div>
-        <div><strong>Không đến sớm hơn 35 phút hoặc ở lại trễ hơn 35 phút</strong> vì lý do cá nhân — trừ khi có tăng ca được phê duyệt.</div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#EAF6EE;border-radius:8px">
-        <div style="font-size:20px;flex-shrink:0">👁️</div>
-        <div><strong>Luôn chấm công</strong> khi đến nhà máy trong bất kỳ trường hợp nào.</div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#F3E8FF;border-radius:8px">
-        <div style="font-size:20px;flex-shrink:0">📵</div>
-        <div>Không dùng điện thoại · Không ăn uống · Không ngủ trong khu vực làm việc. <strong>Mặc đồng phục đầy đủ · Đeo thẻ · Giày xám chỉ dùng trong nhà máy.</strong></div>
-      </div>
-      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#E0F5F7;border-radius:8px;grid-column:span 2">
-        <div style="font-size:20px;flex-shrink:0">🧴</div>
-        <div><strong>Mang theo bình nước cá nhân</strong> theo kích thước tiêu chuẩn của công ty.</div>
-      </div>
+      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng & hợp đồng thử việc</span><span class="contact-num">028 3736 2019 / 0903 345 921</span></div>
+      <div class="contact-item"><span class="contact-icon">🏥</span><span class="contact-topic">Y tế – Phòng sữa mẹ</span><span class="contact-num">028 3736 2483</span></div>
+      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức, bảo hiểm & lương</span><span class="contact-num">028 3736 2018 / 028 3736 2021 / 028 3736 2105</span></div>
     </div>
   </div>
 
@@ -413,28 +421,77 @@
     <!-- Cột trái -->
     <div>
       <div class="faq-group">
-      </div>
+        <div class="faq-group-title">🏭 Về Công ty</div>
 
-      <div class="faq-group">
-        <div class="faq-group-title">💻 Hệ thống & Công cụ</div>
+        <div class="faq-item open">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Sonion là công ty gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Công ty TNHH Sonion Việt Nam được thành lập ngày <strong>01/11/2005</strong>, với <strong>100% vốn đầu tư từ Đan Mạch</strong>. Đây là nhà máy hàng đầu thế giới trong lĩnh vực linh kiện âm thanh siêu nhỏ và chính xác cao.<br><br>
+            <strong>Tầm nhìn:</strong> <em>"Chúng ta giúp thế giới lắng nghe."</em>
+          </div>
+        </div>
 
         <div class="faq-item">
           <div class="faq-q" onclick="toggle(this)">
             <div class="faq-badge">Q</div>
-            <div class="faq-question">Tìm tài liệu và thông tin nội bộ ở đâu?</div>
+            <div class="faq-question">Sonion sản xuất gì? Phục vụ ngành nào?</div>
             <div class="faq-chevron">▼</div>
           </div>
           <div class="faq-a">
             <table>
-              <tr><th>Nhu cầu</th><th>Đường dẫn</th></tr>
-              <tr><td>Chính sách, tài liệu Nhân sự</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/SitePages/HomePage.aspx" target="_blank">HR VN — Home Page</a></td></tr>
-              <tr><td>Đào tạo, Learning &amp; Development</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/lndvn1/SitePages/Home1.aspx" target="_blank">L&amp;D VN — Home</a></td></tr>
-              <tr><td>Tuyển dụng, vị trí đang mở</td><td><a href="https://sonion.talent.vn/" target="_blank">Sonion Careers</a></td></tr>
-              <tr><td>Dịch vụ canteen, xe đưa rước</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/hrservices/SitePages/Home.aspx" target="_blank">Factory Service</a></td></tr>
-              <tr><td>Org chart, JD, thông báo, báo cáo HR</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/SitePages/HomePage.aspx" target="_blank">HR VN — Home Page</a></td></tr>
+              <tr><th>Sản phẩm</th><th>Tên tiếng Anh</th><th>Ứng dụng</th></tr>
+              <tr><td>Bộ phát âm thanh</td><td>Receiver</td><td>Máy trợ thính, tai nghe cao cấp</td></tr>
+              <tr><td>Bộ thu âm thanh</td><td>Microphone</td><td>Máy trợ thính, thiết bị âm thanh</td></tr>
+              <tr><td>Linh kiện vi cơ điện tử</td><td>MMD</td><td>Thiết bị trợ thính thế hệ mới</td></tr>
+            </table>
+            Khách hàng là các thương hiệu thiết bị trợ thính hàng đầu thế giới. Sản phẩm yêu cầu độ chính xác cực cao — đây là lý do có <strong>phòng sạch (clean room)</strong>.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Giá trị cốt lõi của Sonion là gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Giá trị</th><th>Ý nghĩa</th></tr>
+              <tr><td>Hướng đến tương lai</td><td>Suy nghĩ dài hạn, cải tiến liên tục</td></tr>
+              <tr><td>Chủ động hỗ trợ</td><td>Sẵn sàng giúp đỡ đồng nghiệp</td></tr>
+              <tr><td>Trách nhiệm</td><td>Chịu trách nhiệm với công việc</td></tr>
+              <tr><td>Thúc đẩy</td><td>Nỗ lực đạt kết quả tốt hơn</td></tr>
+              <tr><td>Phản ứng linh hoạt</td><td>Thích ứng nhanh với thay đổi</td></tr>
             </table>
           </div>
         </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tại Sonion có những bộ phận nào?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Bộ phận</th><th>Vai trò</th></tr>
+              <tr><td><strong>Sản xuất</strong></td><td>Trực tiếp tạo ra sản phẩm — nơi DL làm việc</td></tr>
+              <tr><td><strong>Chất lượng</strong></td><td>Kiểm soát chất lượng sản phẩm</td></tr>
+              <tr><td><strong>Bảo trì / Kỹ thuật</strong></td><td>Vận hành và bảo dưỡng máy móc</td></tr>
+              <tr><td><strong>Nhân sự (HR)</strong></td><td>Hợp đồng, lương thưởng, bảo hiểm</td></tr>
+              <tr><td><strong>Tài chính</strong></td><td>Kế toán, kiểm soát chi phí</td></tr>
+              <tr><td><strong>Cải tiến (CIM)</strong></td><td>5S, Kaizen, cải tiến quy trình</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">💻 Hệ thống & Công cụ</div>
 
         <div class="faq-item">
           <div class="faq-q" onclick="toggle(this)">
@@ -593,10 +650,7 @@
             <div class="faq-chevron">▼</div>
           </div>
           <div class="faq-a">
-            <div style="padding:8px 10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green);margin-bottom:10px">
-              ✅ <strong>Chậm nhất 25 ngày kể từ ngày vào làm</strong>, bạn sẽ có thẻ BHYT hiển thị trên VssID.
-            </div>
-            Điều kiện để có thẻ ngay trong tháng đầu:
+            Thẻ có hiệu lực từ <strong>tháng bạn bắt đầu đóng BHXH</strong>. Để có thẻ ngay trong tháng đầu làm việc, cần đáp ứng <strong>đồng thời</strong> 2 điều kiện:
             <table style="margin-top:8px">
               <tr><th>Điều kiện</th><th>Yêu cầu</th></tr>
               <tr><td>Ngày ký hợp đồng</td><td>Từ <strong>ngày 1 đến ngày 15</strong> của tháng</td></tr>
@@ -636,6 +690,24 @@
           </div>
         </div>
 
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Phụ cấp ca đêm tại Sonion có cao hơn quy định không?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Có. Sonion trả cao hơn mức luật yêu cầu:
+            <table style="margin-top:8px">
+              <tr><th></th><th>Luật Lao động</th><th>Sonion</th></tr>
+              <tr><td>Phụ cấp đêm</td><td>+30%</td><td><strong>+50%</strong></td></tr>
+              <tr><td>Tổng nhận được</td><td>130% lương ngày</td><td><strong>150% lương ngày</strong></td></tr>
+            </table>
+            <div style="margin-top:8px;padding:8px 10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green)">
+              💡 Và toàn bộ khoản phụ cấp ca đêm này <strong>không tính thuế TNCN</strong>.
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="faq-group">
