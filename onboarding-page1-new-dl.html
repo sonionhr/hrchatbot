@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,8 @@
     --shadow:  0 2px 12px rgba(0,0,0,.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--grey); color: var(--text); font-size: 14px; line-height: 1.6; }
+  html, body { max-width: 100%; overflow-x: hidden; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--grey); color: var(--text); font-size: 14px; line-height: 1.6; overflow-wrap: break-word; word-break: break-word; }
 
   /* ── Header ── */
   .header { background: var(--blue); color: #fff; padding: 28px 40px; display: flex; align-items: center; gap: 20px; }
@@ -39,6 +40,7 @@
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
   .col-span-2 { grid-column: span 2; }
+  .grid-2 > *, .grid-3 > *, .grid-4 > * { min-width: 0; }
 
   /* ── Cards ── */
   .card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; }
@@ -62,7 +64,7 @@
 
   /* ── Salary timeline ── */
   .pay-timeline { display: flex; align-items: stretch; gap: 0; }
-  .pay-step { flex: 1; text-align: center; position: relative; }
+  .pay-step { flex: 1; min-width: 0; text-align: center; position: relative; }
   .pay-step::after { content:''; position:absolute; top:22px; right:0; width:100%; height:2px; background:var(--border); z-index:0; }
   .pay-step:last-child::after { display:none; }
   .pay-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin: 0 auto 8px; position: relative; z-index: 1; }
@@ -74,10 +76,11 @@
   .pay-amount { font-size: 12px; font-weight: 700; color: var(--orange); margin-top: 3px; }
 
   /* ── Tables ── */
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table { width: 100%; max-width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
   th { background: var(--blue); color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 12px; }
   th:first-child { border-radius: 6px 0 0 0; }
   th:last-child  { border-radius: 0 6px 0 0; }
+  th, td { word-break: break-word; overflow-wrap: break-word; }
   td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
   tr:last-child td { border-bottom: none; }
   tr:nth-child(even) td { background: var(--grey); }
@@ -149,7 +152,49 @@
 
   /* ── Footer ── */
   .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 10px; }
+
+  /* ── Responsive (tablet / mobile) ── */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 768px) {
+    .header { padding: 16px 20px; flex-wrap: wrap; gap: 10px; }
+    .header-badge { margin-left: 0; }
+    .container { padding: 18px 12px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .col-span-2 { grid-column: span 1; }
+    .card { padding: 16px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 7px 8px; }
+    .pay-timeline { flex-wrap: wrap; gap: 16px 10px; }
+    .pay-step { flex: 1 1 40%; }
+    .pay-step::after { display: none; }
+    .ot-label { width: 100px; font-size: 11px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 13px; }
+    .header-logo { font-size: 22px; }
+    .header-text h1 { font-size: 16px; }
+    .header-text p { font-size: 11px; }
+    .header-badge { font-size: 11px; padding: 5px 12px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .stat-val { font-size: 20px; }
+    .card-title { font-size: 12px; }
+    table { font-size: 11px; }
+    th, td { padding: 6px 7px; }
+    .contact-item { flex-wrap: wrap; }
+    .contact-num { width: 100%; padding-left: 28px; }
+  }
 </style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_dlc_DocId msdt:dt="string">M7AD5DXWA54W-1745450731-1409</mso:_dlc_DocId>
+<mso:_dlc_DocIdItemGuid msdt:dt="string">90010dc8-ffc2-4164-957a-6795c0f7964a</mso:_dlc_DocIdItemGuid>
+<mso:_dlc_DocIdUrl msdt:dt="string">https://sonion.sharepoint.com/departments/hr/vn/_layouts/15/DocIdRedir.aspx?ID=M7AD5DXWA54W-1745450731-1409, M7AD5DXWA54W-1745450731-1409</mso:_dlc_DocIdUrl>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
 </head>
 <body>
 
@@ -261,7 +306,7 @@
           <tr><td>Trợ cấp sinh hoạt</td><td><strong>400.000 đ</strong>/tháng</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Quà lễ / sinh nhật</td><td><strong>200.000 đ</strong>/dịp</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Thưởng chuyên cần</td><td><strong>500.000 đ</strong>/tháng</td><td>Làm việc đủ đến cuối tháng</td></tr>
-          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Nhân viên chính thức; Yield & Productivity</td></tr>
+          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Tính từ ngày bắt đầu làm việc (kể cả thử việc); Yield & Productivity</td></tr>
         </tbody>
       </table>
     </div>
@@ -366,11 +411,9 @@
     </div>
     <div class="card">
       <div class="card-title"><span class="icon">📞</span> Liên hệ HR</div>
-      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng / Hợp đồng thử việc</span><span class="contact-num">028 3736 2019</span></div>
-      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức / Bảo hiểm</span><span class="contact-num">028 3736 2018</span></div>
-      <div class="contact-item"><span class="contact-icon">💵</span><span class="contact-topic">Lương</span><span class="contact-num">028 3736 2021</span></div>
-      <div class="contact-item"><span class="contact-icon">🔑</span><span class="contact-topic">Tủ locker</span><span class="contact-num">028 3736 2483</span></div>
-      <div class="contact-item"><span class="contact-icon">💻</span><span class="contact-topic">Yêu cầu chung</span><span class="contact-num">Cadena / HR Helpdesk · Máy Trạm</span></div>
+      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng & hợp đồng thử việc</span><span class="contact-num">028 3736 2019 / 0903 345 921</span></div>
+      <div class="contact-item"><span class="contact-icon">🏥</span><span class="contact-topic">Y tế – Phòng sữa mẹ</span><span class="contact-num">028 3736 2483</span></div>
+      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức, bảo hiểm & lương</span><span class="contact-num">028 3736 2018 / 028 3736 2021 / 028 3736 2105</span></div>
     </div>
   </div>
 
@@ -592,14 +635,19 @@
             <div class="faq-chevron">▼</div>
           </div>
           <div class="faq-a">
-            Có. Nhân viên sản xuất (Operator) nhận việc từ <strong>10/11/2025</strong> nhận thưởng theo 2 mốc:
+            Có. Nhân viên sản xuất (Operator) nhận việc lần đầu tại Sonion (hoặc nhân viên cũ quay lại sau khi đã nghỉ việc từ 180 ngày trở lên) nhận thưởng theo 3 mốc, mức thưởng tùy nhóm công việc:
             <table style="margin-top:8px">
-              <tr><th>Mốc</th><th>Mức thưởng</th></tr>
-              <tr><td>Sau khi hoàn tất thử việc</td><td><strong>1.500.000 đ</strong></td></tr>
-              <tr><td>Sau 3 tháng làm việc liên tục</td><td><strong>1.500.000 đ</strong></td></tr>
+              <tr><th>Mốc</th><th>Nhóm nhìn kính<br><span style="font-weight:400;font-size:11px">(từ 01/06/2026)</span></th><th>Nhóm không nhìn kính<br><span style="font-weight:400;font-size:11px">(từ 15/06/2026)</span></th></tr>
+              <tr><td>Đủ 1 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td>Đủ 2 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td>Đủ 3 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td><strong>Tổng / 3 tháng</strong></td><td><strong>4.500.000 đ</strong></td><td><strong>3.000.000 đ</strong></td></tr>
             </table>
             <div style="margin-top:8px;padding:7px 10px;background:var(--blue-lt);border-radius:6px;font-size:12px;color:#1E3A5F">
-              📌 Nhóm nhận việc <strong>08/10–09/11/2025</strong>: nhận 1.500.000 đ nếu làm đến hết <strong>09/02/2026</strong> — chi trả ngày 05/03/2026. Thông báo qua <strong>Slack</strong>.
+              📌 <strong>Điều kiện:</strong> Đạt yêu cầu thử việc; không nghỉ quá 2 ngày trong tháng làm việc đầu tiên; tổng số ngày nghỉ không quá 3 ngày trong 3 tháng đầu (không tính nghỉ do công ty sắp xếp hoặc bất khả kháng).
+            </div>
+            <div style="margin-top:6px;padding:7px 10px;background:var(--blue-lt);border-radius:6px;font-size:12px;color:#1E3A5F">
+              📌 <strong>Lịch nhận thưởng tháng 1</strong> (N = tháng nhận việc): vào làm ngày 01–10 → nhận ngày 12 tháng N+1; ngày 11–18 → nhận ngày 20 tháng N+1; ngày 19–31 → nhận ngày 05 tháng N+2. Thưởng tháng 2 & 3 trả cùng kỳ lương tương ứng.
             </div>
           </div>
         </div>
