@@ -3,6 +3,8 @@
 
 > **2026-08-13 — source changed from `Orgchart.xlsx` to `Orgchart.csv`.** The Power BI export moved from an Excel workbook (sheet `Export`, columns named like `Masterlist[Employee Key]`) to a plain CSV (columns named like `MasterlistEmployee Key` — no brackets, no sheet). `scripts/generate_orgchart.py` was updated to read the CSV; `raw_docs/Orgchart.xlsx` is no longer read by the script (it may still exist in the repo as a leftover export, but it is not the source of truth — don't update it expecting the chart to change).
 
+> **2026-08-17 — output is now written to TWO locations.** In addition to the repo copy (`html/orgchart.html`, used for git history/STEP 4), the script also writes a second copy to `C:\Users\vyho\Sonion A S\HR VN - Documents\orgchart.html` — the local OneDrive/SharePoint sync mirror of the **Shared Documents** library at `https://sonion.sharepoint.com/departments/hr/vn/Shared%20Documents/Forms/Userview.aspx`. OneDrive auto-syncs that copy up to SharePoint on its own; the script only writes the local file. If that path ever moves (OneDrive re-links, folder renamed), update `OUT_SHAREPOINT` in `scripts/generate_orgchart.py` — the write is wrapped in a try/except that warns but doesn't fail the whole run if that copy can't be written (e.g. folder temporarily offline).
+
 ---
 
 ## THE FLOW
@@ -34,16 +36,18 @@ The script prints, in order:
 2. Any duplicate Employee Keys found (should be none — investigate if not).
 3. The consolidation log for both tiers (see BUSINESS RULES below) — one line per department head, with the resulting bucket name and headcount. **Skim this** — it's the fastest way to notice if a head is missing, a department jumped size unexpectedly, or a name collision got auto-disambiguated in a way you didn't expect.
 4. Renderable node count vs excluded-DL count.
-5. The company root's name/title.
+5. The company root's name/title, and separately the SVN root's name/title (these are two different people — see below).
 6. Final department list with true headcounts.
 
 If the company root isn't "Christian Nielsen (CN) — CEO & President", or a `WARNING: expected exactly 1 blank-parent root` line appears, the export's top-of-hierarchy row is missing or has a non-blank parent — check STEP 1 first (most likely cause), then check the raw file itself.
 
+If the SVN root isn't "Jason King (JKI) — Operations Senior Vice President", or a `WARNING: 'Jason King' not found` line appears, either Jason King's name changed in the export or he's genuinely missing — the **SVN Org Chart** tab (see STEP 3) will have silently fallen back to the global company root instead, which is worth catching before it ships.
+
 ## STEP 3 — Spot-check the output
 
 Open `html/orgchart.html` in a browser and check:
-- **Company Org Chart** tab: root is Christian Nielsen, 5 direct reports shown by default.
-- **Department Org Chart** tab: dropdown count roughly matches expectations (compare against the previous run's numbers in `CHANGELOG.md` or your own memory of the org — a department halving or doubling in size is worth a second look, not necessarily wrong, but worth explaining).
+- **SVN Org Chart** tab: root is Jason King (JKI) — Sonion Vietnam only, not the global company — with his direct reports shown as the second layer by default.
+- **Department Org Chart** tab: dropdown lists ~50+ granular departments (grouped by `MasterlistNew Department` as-is, not the structural consolidation — see BUSINESS RULES below), e.g. "VNI_Quality (112)", "VNI_Maintenance (206)", "VNI_Production (300)". Dropdown count roughly matches expectations (compare against the previous run's numbers in `CHANGELOG.md` or your own memory of the org — a department halving or doubling in size is worth a second look, not necessarily wrong, but worth explaining).
 - **Full Org Chart** tab: loads without errors, sections fit the page width.
 - Browser console: no errors (F12 → Console).
 
@@ -59,6 +63,8 @@ git commit -m "Update org chart data — <one-line summary of what changed in th
 ```
 
 If a regeneration ever produces something wrong and you haven't committed yet, `git diff`/`git checkout` won't help you — the previous version is simply gone. This is the one step in this workflow that exists specifically to prevent repeating that mistake.
+
+The SharePoint sync copy (`HR VN - Documents\orgchart.html`, see the 2026-08-17 note at the top) is **not** part of this repo and has no git history of its own — it's just a OneDrive-synced file that gets silently overwritten every run, with no revert path if a bad regeneration reaches it. This is exactly why the repo copy + git commit above still matters even though the SharePoint copy is the one people actually browse to.
 
 ---
 
@@ -82,6 +88,9 @@ If a department bucket's name collides with a sibling's (two heads defaulting to
 
 If the org changes and a similar text/reality mismatch appears for someone else, add them here rather than special-casing elsewhere.
 
+### SVN Org Chart tab is rooted at Jason King, not the global company root
+`companyRoot` (Christian Nielsen) and `svnRoot` (Jason King) are two separate fields in the exported data — `companyRoot` stays the true global root for every data-model purpose (Tier 1 consolidation, dept_label grounding, headcount totals, the "expected exactly 1 blank-parent root" check), while `svnRoot` only controls what the **SVN Org Chart** tab renders as its top card. This is a display-only re-rooting: Jason King's own dept_label, entity flag, and subtree are computed exactly the same way as everyone else's — the tab just starts the tree one level down (at Jason King) instead of at the top (Christian Nielsen), since this tool is scoped to Sonion Vietnam HR. If Jason King is ever renamed/replaced as VN country head, update the name-match in `svn_root_key = jason_node["key"] if jason_node else company_root_key` (it currently matches on `r["name"].startswith("Jason King")`, the same lookup Tier 2 consolidation already relies on).
+
 ### DL (Direct Labor) employees are counted everywhere but never rendered
 Every headcount and report-count badge counts **every** employee, including rank-and-file DL production operators. But DL people never get their own card and are never expandable — the render set (`nodes`) explicitly excludes `jobtype == "DL"`. Where every one of a person's direct reports is DL, a dashed "(not shown)" badge appears instead of an expand toggle, still showing the true count.
 
@@ -93,6 +102,13 @@ Anyone whose `Entity` column value isn't `"VNI"` (the Vietnam baseline) gets a s
 ### Unlinked employees
 Anyone whose real management chain never reaches the company root within this export (a manager key missing from the data) gets a dept label suffixed `— unlinked (manager not in this export)`, rather than silently falling back to raw text that could coincidentally collide with — and get merged into — a real department.
 
+### Department Org Chart tab groups by a DIFFERENT column than everything else (MasterlistNew Department, not Groupdept_shown_VN)
+Every card's dept label elsewhere in the app (SVN Org Chart tab, Full Org Chart print sections) uses `dept_label` — the structurally-grounded consolidation described above. The **Department Org Chart tab's dropdown and grouping** (and the Full Org Chart print view, which reuses the same `getDeptGroup()` function) instead use a separate field, `new_dept_label`, read directly from the `MasterlistNew Department` column **as-is, with no structural grounding and no other transformation** — just each person's own raw text value (verbatim, entity prefix included), defaulting to "Unassigned" only if blank. This is a deliberate exception to the "grounding is 100% structural" rule above: `MasterlistNew Department` is a per-person column HR added that's already clean and complete (as of 2026-08-14: 0 blank, 0 pipe-breadcrumb values across 5,563 rows) and far more granular than `Groupdept_shown_VN` — it breaks the ~4,900-person "Production (300)" structural bucket into real functional units (Quality, Maintenance, NPI, Toolshop, Industrialization, etc.), which is the whole point of this tab. Note the raw values are entity-prefixed (`VNI_Quality (112)`, `VNII_Quality (112)`, `SonionAS_Finance (904)`) — this means the same real department appears as 2–3 separate dropdown entries split by entity (55 raw values as of 2026-08-14, vs. 37 if the prefix were ever stripped); this is intentional, not a bug — do not silently strip the prefix without confirming with whoever owns this workflow first.
+
+Two separate JSON fields exist side by side (`depts`/`deptTotals`/`dept_label` for structural, `newDepts`/`newDeptTotals`/`new_dept_label` for this tab) — don't conflate them when editing either.
+
+If `MasterlistNew Department` ever becomes unreliable again (blanks, pipe-breadcrumbs, or text that doesn't match real teams), consider switching the Department Org Chart tab back to structural grounding (i.e. reading `dept_label` instead of `new_dept_label` in `getDeptGroup()` and the `deptSelect`/`drawPrintAll` wiring) rather than patching around bad text data.
+
 ### Column layout is read by name, not position
 `raw_docs/Orgchart.csv`'s column order has changed between exports before (Power BI re-exports don't guarantee stable column order — this is also what changed the column *naming style* itself when the export moved from .xlsx to .csv, see the note at the top of this file). The script reads every field via `row.get(header_name)` on the parsed CSV dict rows, resolved from the actual header row — never a hardcoded column index. If a column is renamed or removed, the script will fail fast with a clear error (`REQUIRED` list check) rather than silently reading the wrong field.
 
@@ -103,6 +119,6 @@ Unlike the old .xlsx export, this CSV export contains roughly 740 rows (mostly `
 
 ## IF THE COLUMN LAYOUT CHANGES
 
-The script assumes a header row containing (by name, any order): `MasterlistName_Initial`, `MasterlistEmployee Key`, `MasterlistParentkey_revise`, `MasterlistGroupdept_shown_VN`, `MasterlistChức vụ`, `MasterlistJob_type`, `MasterlistEntity`.
+The script assumes a header row containing (by name, any order): `MasterlistName_Initial`, `MasterlistEmployee Key`, `MasterlistParentkey_revise`, `MasterlistGroupdept_shown_VN`, `MasterlistNew Department`, `MasterlistChức vụ`, `MasterlistJob_type`, `MasterlistEntity`.
 
 If Power BI drops/renames one of these columns (or reverts to the old `Masterlist[...]`-bracketed naming style), the script exits with a clear error naming the missing column(s) and the actual headers found — update the `REQUIRED` list and the corresponding `g(row, "...")` calls in `scripts/generate_orgchart.py` to match.

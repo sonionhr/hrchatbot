@@ -29,6 +29,15 @@ import json
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SRC = REPO_ROOT / "raw_docs" / "Orgchart.csv"
 OUT = REPO_ROOT / "html" / "orgchart.html"
+# Second copy, written alongside the repo copy above — this path is the local
+# OneDrive/SharePoint sync mirror of the "Shared Documents" library at
+# https://sonion.sharepoint.com/departments/hr/vn/Shared%20Documents/Forms/Userview.aspx
+# (confirmed 2026-08-17: same site as raw_docs/wiki_employee's own sync
+# folder, just a different, sibling document library). Writing here lets
+# OneDrive auto-sync the file up to that SharePoint location; the repo copy
+# (OUT above) still exists separately so STEP 4's git history/revert safety
+# net is unaffected.
+OUT_SHAREPOINT = Path(r"C:\Users\vyho\Sonion A S\HR VN - Documents") / "orgchart.html"
 
 
 def load_csv_rows_stable(path: Path, max_attempts: int = 5, interval: float = 2.0):
@@ -82,7 +91,8 @@ headers, csv_rows = load_csv_rows_stable(SRC)
 
 REQUIRED = ["MasterlistName_Initial", "MasterlistEmployee Key",
             "MasterlistParentkey_revise", "MasterlistGroupdept_shown_VN",
-            "MasterlistChức vụ", "MasterlistJob_type", "MasterlistEntity"]
+            "MasterlistNew Department", "MasterlistChức vụ", "MasterlistJob_type",
+            "MasterlistEntity"]
 missing = [r for r in REQUIRED if r not in headers]
 if missing:
     sys.exit(
@@ -111,11 +121,21 @@ for row in csv_rows:
     # Some rows carry a pipe-separated breadcrumb (e.g. "ME & EE & OPM|VNII|...")
     # instead of one clean department name — only the first segment is real.
     dept = dept_raw.split("|")[0].strip() if dept_raw else ""
+    # MasterlistNew Department is a separate, per-person column used ONLY for
+    # the Department Org Chart tab (and the Full Org Chart print view, which
+    # shares its grouping) — a direct text grouping, not grounded through the
+    # real manager chain like `dept`/`dept_label` below. It's kept for that
+    # narrower purpose because, unlike Groupdept_shown_VN, this column is
+    # clean/complete enough (no blanks, no pipe-breadcrumbs as of 2026-08-14)
+    # to trust directly without the structural-grounding workaround.
+    new_dept_raw = (g(row, "MasterlistNew Department") or "").strip()
+    new_dept = new_dept_raw.split("|")[0].strip() if new_dept_raw else ""
     title = (g(row, "MasterlistChức vụ") or "").strip()
     jobtype = (g(row, "MasterlistJob_type") or "").strip()
     entity = (g(row, "MasterlistEntity") or "").strip()
     raw_rows.append({"key": str(key).strip(), "name": name, "parent": parent,
-                      "dept": dept, "title": title, "jobtype": jobtype, "entity": entity})
+                      "dept": dept, "new_dept": new_dept, "title": title,
+                      "jobtype": jobtype, "entity": entity})
 
 print("Total raw rows:", len(raw_rows))
 dupkeys = Counter(r["key"] for r in raw_rows)
@@ -219,6 +239,17 @@ else:
     print("WARNING: 'Jason King' not found in this export — tier-2 department "
           "consolidation was skipped. See prompt-orgchart-update.md.")
 
+# SVN root — the "SVN Org Chart" tab shows Sonion Vietnam only, rooted at
+# Jason King (VN Operations Country Head) rather than the global company
+# root (Christian Nielsen). This is purely a display choice for that one
+# tab; company_root_key above remains Christian Nielsen for every other
+# purpose (Tier 1 consolidation, dept_label grounding, headcount totals),
+# since those must stay grounded on the true full-company tree.
+svn_root_key = jason_node["key"] if jason_node else company_root_key
+if not jason_node:
+    print("WARNING: 'Jason King' not found — SVN Org Chart tab falls back to "
+          "the global company root instead.")
+
 # Breakdown is grounded on real org structure (above), applied to EVERY
 # employee. Anyone whose true chain never reaches the company root within
 # this export (a broken/missing manager key upstream) is explicitly flagged
@@ -235,11 +266,18 @@ for r in raw_rows:
         base = r["dept"] if r["dept"] else "Unassigned"
         r["dept_label"] = f"{base} — unlinked (manager not in this export)"
     r["entity_flag"] = r["entity"] if r["entity"] and r["entity"] != BASELINE_ENTITY else ""
+    # Department Org Chart tab's grouping — direct per-person text from
+    # MasterlistNew Department, no structural grounding/consolidation applied
+    # (see the note where new_dept is read above for why this one's trusted
+    # directly). Falls back to "Unassigned" only if the column is ever blank.
+    r["new_dept_label"] = r["new_dept"] if r["new_dept"] else "Unassigned"
 
 # True headcount per department — counts EVERY employee, including DL
 # operators who will never get their own card.
 dept_counts = Counter(r["dept_label"] for r in raw_rows)
 dept_list = sorted(dept_counts.keys())
+new_dept_counts = Counter(r["new_dept_label"] for r in raw_rows)
+new_dept_list = sorted(new_dept_counts.keys())
 
 # True TOTAL subordinate count per person, broken down by Job_type
 # (IDL/DLS/DL) — every person below them at ANY depth, not just direct
@@ -274,18 +312,26 @@ print("\nRenderable nodes (never expand into DL):", len(nodes),
 by_key = {n["key"]: n for n in nodes}
 
 print("Company root:", company_root_key, by_key_all[company_root_key]["name"], by_key_all[company_root_key]["title"])
-print("Departments (true headcount incl. DL):")
+print("SVN root:", svn_root_key, by_key_all[svn_root_key]["name"], by_key_all[svn_root_key]["title"])
+print("Departments — structural, used for SVN Org Chart card labels (true headcount incl. DL):")
 for d in dept_list:
     print(f"  {d}: {dept_counts[d]}")
+print("Departments — Department Org Chart tab, direct from MasterlistNew Department (true headcount incl. DL):")
+for d in new_dept_list:
+    print(f"  {d}: {new_dept_counts[d]}")
 
 data_json = json.dumps({
     "nodes": [{"key": n["key"], "parent": n["parent"], "name": n["name"],
                "title": n["title"], "dept_label": n["dept_label"],
+               "new_dept_label": n["new_dept_label"],
                "entity_flag": n["entity_flag"],
                "report_breakdown": report_breakdown.get(n["key"], {})} for n in nodes],
     "companyRoot": company_root_key,
+    "svnRoot": svn_root_key,
     "depts": dept_list,
     "deptTotals": dept_counts,
+    "newDepts": new_dept_list,
+    "newDeptTotals": new_dept_counts,
 }, ensure_ascii=False)
 
 HTML_TEMPLATE = r"""<!doctype html>
@@ -466,7 +512,7 @@ HTML_TEMPLATE = r"""<!doctype html>
   </div>
   <div class="header-toolbar no-print">
     <div class="tabs">
-      <button class="tab-btn active" data-tab="company">Company Org Chart</button>
+      <button class="tab-btn active" data-tab="svn">SVN Org Chart</button>
       <button class="tab-btn" data-tab="dept">Department Org Chart</button>
       <button class="tab-btn" data-tab="print">Full Org Chart (All Departments)</button>
     </div>
@@ -483,9 +529,9 @@ HTML_TEMPLATE = r"""<!doctype html>
   </div>
 </header>
 <main>
-  <div class="chart-wrap active" id="wrap-company">
-    <p class="meta-line" id="companyMeta"></p>
-    <div id="companyChart"></div>
+  <div class="chart-wrap active" id="wrap-svn">
+    <p class="meta-line" id="svnMeta"></p>
+    <div id="svnChart"></div>
   </div>
   <div class="chart-wrap" id="wrap-dept">
     <p class="meta-line" id="deptMeta"></p>
@@ -598,20 +644,20 @@ HTML_TEMPLATE = r"""<!doctype html>
     containerEl.appendChild(ul);
   }
 
-  const companyRoot = byKey[DATA.companyRoot];
-  const companyContainer = document.getElementById('companyChart');
-  function drawCompany(defaultExpandDepth){
-    renderForest(companyContainer, [companyRoot], true, defaultExpandDepth, getChildren);
+  const svnRoot = byKey[DATA.svnRoot];
+  const svnContainer = document.getElementById('svnChart');
+  function drawSvn(defaultExpandDepth){
+    renderForest(svnContainer, [svnRoot], true, defaultExpandDepth, getChildren);
   }
-  drawCompany(1);
-  document.getElementById('companyMeta').textContent =
-    `Root: ${companyRoot.name} — ${companyRoot.title}. Showing head + direct reports by default; use a card's button to expand further, or "Expand all" above.`;
+  drawSvn(1);
+  document.getElementById('svnMeta').textContent =
+    `Root: ${svnRoot.name} — ${svnRoot.title} (Sonion Vietnam). Showing head + direct reports by default; use a card's button to expand further, or "Expand all" above.`;
 
   const deptSelect = document.getElementById('deptSelect');
-  DATA.depts.forEach(d => {
-    // deptTotals is the TRUE headcount (incl. DL); nodes.filter(...).length
+  DATA.newDepts.forEach(d => {
+    // newDeptTotals is the TRUE headcount (incl. DL); nodes.filter(...).length
     // would only count renderable (non-DL) people and undercount it.
-    const count = DATA.deptTotals[d] || 0;
+    const count = DATA.newDeptTotals[d] || 0;
     const opt = document.createElement('option');
     opt.value = d;
     opt.textContent = `${d} (${count})`;
@@ -622,7 +668,7 @@ HTML_TEMPLATE = r"""<!doctype html>
   // different bucket just because the raw reporting line connects them
   // (e.g. a SonionAS-entity person managing otherwise-VNI staff).
   function getDeptGroup(dept){
-    const members = nodes.filter(n => n.dept_label === dept);
+    const members = nodes.filter(n => n.new_dept_label === dept);
     const memberKeys = new Set(members.map(m => m.key));
     const roots = members.filter(m => !memberKeys.has(m.parent));
     const childrenLookup = (key) => (childrenByParent[key] || []).filter(c => memberKeys.has(c.key));
@@ -634,13 +680,13 @@ HTML_TEMPLATE = r"""<!doctype html>
   function drawDept(){
     const dept = deptSelect.value;
     const { roots, childrenLookup } = getDeptGroup(dept);
-    const total = DATA.deptTotals[dept] || 0;
+    const total = DATA.newDeptTotals[dept] || 0;
     document.getElementById('deptMeta').textContent =
       `${dept} — ${total} member(s) incl. DL, ${roots.length} head${roots.length>1?'s':''}.`;
     renderForest(deptContainer, roots, false, currentDeptExpandDepth, childrenLookup);
   }
   deptSelect.addEventListener('change', drawDept);
-  if (DATA.depts.length){ deptSelect.value = DATA.depts[0]; drawDept(); }
+  if (DATA.newDepts.length){ deptSelect.value = DATA.newDepts[0]; drawDept(); }
 
   // ---- Full Org Chart (print) — every department, using the SAME
   // box/connector tree template as the Department Org Chart tab (just one
@@ -666,13 +712,13 @@ HTML_TEMPLATE = r"""<!doctype html>
   function drawPrintAll(){
     const container = document.getElementById('printAllChart');
     container.innerHTML = '';
-    DATA.depts.forEach(dept => {
+    DATA.newDepts.forEach(dept => {
       const { roots, childrenLookup } = getDeptGroup(dept);
       const section = document.createElement('div');
       section.className = 'print-dept-section';
       const title = document.createElement('h2');
       title.className = 'print-dept-title';
-      title.textContent = `${dept} (${DATA.deptTotals[dept] || 0})`;
+      title.textContent = `${dept} (${DATA.newDeptTotals[dept] || 0})`;
       section.appendChild(title);
       const scaleWrap = document.createElement('div');
       scaleWrap.className = 'print-tree-scalewrap';
@@ -694,14 +740,14 @@ HTML_TEMPLATE = r"""<!doctype html>
   // a new browser session) so that if this file gets reloaded out from under
   // the user — a live-preview/auto-refresh extension reloading on every save
   // is the usual cause — it comes back to the tab they were on instead of
-  // silently resetting to Company every time.
+  // silently resetting to SVN every time.
   let printDrawn = false;
   const TAB_STORAGE_KEY = 'orgchart_active_tab';
   const tabBtns = document.querySelectorAll('.tab-btn');
 
   function activateTab(tab, { persist = true } = {}){
     tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-    document.getElementById('wrap-company').classList.toggle('active', tab === 'company');
+    document.getElementById('wrap-svn').classList.toggle('active', tab === 'svn');
     document.getElementById('wrap-dept').classList.toggle('active', tab === 'dept');
     document.getElementById('wrap-print').classList.toggle('active', tab === 'print');
     document.getElementById('deptToolbar').classList.toggle('hidden', tab !== 'dept');
@@ -716,20 +762,20 @@ HTML_TEMPLATE = r"""<!doctype html>
 
   let restoredTab = null;
   try { restoredTab = sessionStorage.getItem(TAB_STORAGE_KEY); } catch (e) { /* ignore */ }
-  if (restoredTab && ['company', 'dept', 'print'].includes(restoredTab) && restoredTab !== 'company'){
+  if (restoredTab && ['svn', 'dept', 'print'].includes(restoredTab) && restoredTab !== 'svn'){
     activateTab(restoredTab, { persist: false });
   }
 
   function activeTab(){ return document.querySelector('.tab-btn.active').dataset.tab; }
   document.getElementById('expandAllBtn').addEventListener('click', () => {
     const tab = activeTab();
-    if (tab === 'company') drawCompany(9999);
+    if (tab === 'svn') drawSvn(9999);
     else if (tab === 'dept') { currentDeptExpandDepth = 9999; drawDept(); }
     else { currentPrintExpandDepth = 9999; drawPrintAll(); }
   });
   document.getElementById('collapseAllBtn').addEventListener('click', () => {
     const tab = activeTab();
-    if (tab === 'company') drawCompany(1);
+    if (tab === 'svn') drawSvn(1);
     else if (tab === 'dept') { currentDeptExpandDepth = 1; drawDept(); }
     else { currentPrintExpandDepth = 1; drawPrintAll(); }
   });
@@ -743,5 +789,13 @@ data_json_safe = data_json.replace("</", "<\\/")
 html = HTML_TEMPLATE.replace("__DATA_JSON__", data_json_safe)
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(html, encoding="utf-8")
-
 print("\nWrote", OUT, len(html), "bytes")
+
+try:
+    OUT_SHAREPOINT.parent.mkdir(parents=True, exist_ok=True)
+    OUT_SHAREPOINT.write_text(html, encoding="utf-8")
+    print("Wrote", OUT_SHAREPOINT, len(html), "bytes (SharePoint sync copy)")
+except OSError as e:
+    print(f"WARNING: could not write the SharePoint sync copy at {OUT_SHAREPOINT} "
+          f"({e}) — the repo copy above was still written fine. Check the OneDrive "
+          "sync folder still exists at that path and isn't locked/offline.")
