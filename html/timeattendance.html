@@ -84,35 +84,30 @@
         let isProcessing = false;
 
         // Fetch danh sách nhân viên từ Google Sheets
-// Fetch danh sách nhân viên từ Google Sheets bằng JSONP (Khắc phục triệt để lỗi CORS)
-function fetchEmployees() {
-    const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
-    const script = document.createElement('script');
-    
-    window[callbackName] = function(data) {
+// Fetch danh sách nhân viên bằng fetch() với cơ chế tự động follow redirect
+async function fetchEmployees() {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'GET',
+            redirect: 'follow'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
         employeeDatabase = data;
+
         document.getElementById('status-sync').innerText = `✓ Danh sách có ${employeeDatabase.length} nhân viên`;
         document.getElementById('status-sync').className = "text-xs text-center text-green-400 font-medium py-1";
-        
-        // Dọn dẹp sau khi nhận dữ liệu thành công
-        delete window[callbackName];
-        if (script.parentNode) {
-            script.parentNode.removeChild(script);
-        }
-    };
-
-    script.src = `${API_URL}?prefix=${callbackName}`;
-    script.onerror = function() {
+    } catch (err) {
+        console.error("Chi tiết lỗi fetch:", err);
         document.getElementById('status-sync').innerText = '✗ Lỗi kết nối Google Sheets!';
         document.getElementById('status-sync').className = "text-xs text-center text-red-400 font-medium py-1";
-        delete window[callbackName];
-        if (script.parentNode) {
-            script.parentNode.removeChild(script);
-        }
-    };
-
-    document.body.appendChild(script);
+    }
 }
+
 
 // Ghi lịch sử check-in vào Google Sheets
 async function logCheckin(logData) {
