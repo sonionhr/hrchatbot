@@ -78,7 +78,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbydYsINQx8hmQcyHTTA5lPOUlFkQNMuDFPSG2t0_qNhxOlaInI5rkExg33Dvs5xrDa1/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbw9b1w4D2T6uOsmM86oKNAuaoRJASDQR4e0FkDZsTWwropu8-hQJuNUKiagSX-JJ-0m/exec"; 
         
         let employeeDatabase = [];
         let isProcessing = false;
@@ -102,7 +102,7 @@
                 await fetch(API_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(logData)
                 });
             } catch (e) {
