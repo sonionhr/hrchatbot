@@ -78,40 +78,55 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbz3O9HHr4QNzCMgTENcaPPf9vpNukG2J-mGg3aBPpJjanWK75NNVrXPF1pdHg6DyKVS/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbw9rp0OngXuI4V8XCBYh_YFYbXigJxbrO-mQV9xPdp69JWdwxXUkAYgEYUBzwDTwegW/exec"; 
         
         let employeeDatabase = [];
         let isProcessing = false;
 
         // Fetch danh sách nhân viên từ Google Sheets
-       async function fetchEmployees() {
-    try {
-        const res = await fetch(API_URL);
-        const textData = await res.text();
-        employeeDatabase = JSON.parse(textData);
-        
+// Fetch danh sách nhân viên từ Google Sheets bằng JSONP (Khắc phục triệt để lỗi CORS)
+function fetchEmployees() {
+    const callbackName = 'jsonp_cb_' + Math.round(100000 * Math.random());
+    const script = document.createElement('script');
+    
+    window[callbackName] = function(data) {
+        employeeDatabase = data;
         document.getElementById('status-sync').innerText = `✓ Danh sách có ${employeeDatabase.length} nhân viên`;
         document.getElementById('status-sync').className = "text-xs text-center text-green-400 font-medium py-1";
-    } catch (err) {
-        console.error("Lỗi fetch:", err);
+        
+        // Dọn dẹp sau khi nhận dữ liệu thành công
+        delete window[callbackName];
+        if (script.parentNode) {
+            script.parentNode.removeChild(script);
+        }
+    };
+
+    script.src = `${API_URL}?prefix=${callbackName}`;
+    script.onerror = function() {
         document.getElementById('status-sync').innerText = '✗ Lỗi kết nối Google Sheets!';
         document.getElementById('status-sync').className = "text-xs text-center text-red-400 font-medium py-1";
-    }
+        delete window[callbackName];
+        if (script.parentNode) {
+            script.parentNode.removeChild(script);
+        }
+    };
+
+    document.body.appendChild(script);
 }
 
-        // Ghi lịch sử check-in vào Google Sheets
-        async function logCheckin(logData) {
-            try {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(logData)
-                });
-            } catch (e) {
-                console.error("Lỗi ghi log:", e);
-            }
-        }
+// Ghi lịch sử check-in vào Google Sheets
+async function logCheckin(logData) {
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(logData)
+        });
+    } catch (e) {
+        console.error("Lỗi ghi log:", e);
+    }
+}
 
         // Xử lý sự kiện Quét Barcode thành công
         function onScanSuccess(decodedText) {
