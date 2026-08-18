@@ -1,291 +1,287 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Chấm công - Tra cứu ca làm việc</title>
-<style>
-  :root {
-    --brand: #2563eb;
-    --ok-bg: #ecfdf5;
-    --ok-border: #10b981;
-    --ok-text: #065f46;
-    --no-bg: #fef2f2;
-    --no-border: #ef4444;
-    --no-text: #991b1b;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background: #f3f4f6;
-    color: #111827;
-    padding: 16px;
-  }
-  .wrap { max-width: 480px; margin: 0 auto; }
-  h1 {
-    font-size: 20px;
-    text-align: center;
-    margin: 4px 0 16px;
-  }
-  .card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 14px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  }
-  #reader {
-    width: 100%;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .camera-fallback {
-    display: none;
-    text-align: center;
-    padding: 20px 8px;
-  }
-  .camera-fallback button, #lookupBtn, #rescanBtn {
-    background: var(--brand);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 16px;
-    font-size: 15px;
-    cursor: pointer;
-  }
-  #rescanBtn { background: #6b7280; margin-top: 10px; width: 100%; }
-  label { font-size: 13px; color: #4b5563; display: block; margin-bottom: 6px; }
-  .id-row { display: flex; gap: 8px; }
-  #idInput {
-    flex: 1;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-  }
-  #status { font-size: 13px; color: #6b7280; margin-top: 8px; min-height: 16px; text-align: center; }
-  .result { border-radius: 10px; padding: 18px; text-align: center; display: none; }
-  .result.show { display: block; }
-  .result .label { font-size: 13px; color: #6b7280; margin-bottom: 6px; }
-  .result .value { font-size: 22px; font-weight: 700; }
-  .result.found { background: var(--ok-bg); border: 1px solid var(--ok-border); }
-  .result.found .value { color: var(--ok-text); }
-  .result.notfound { background: var(--no-bg); border: 1px solid var(--no-border); }
-  .result.notfound .value { color: var(--no-text); font-size: 18px; }
-  .scanned-id { font-size: 12px; color: #9ca3af; margin-top: 8px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Check-in Barcode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <style>
+    .icon-overlay {
+        animation: popIn 0.3s ease-out forwards;
+    }
+    @keyframes popIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* BỔ SUNG: Ép hiển thị viền khung quét trên Android */
+    #reader canvas.qr-shaded-region {
+        opacity: 0.6 !important;
+    }
+    #reader__scan_region {
+        background: transparent !important;
+    }
+    #reader__scan_region img {
+        opacity: 0.8 !important;
+    }
 </style>
 </head>
-<body>
-<div class="wrap">
-  <h1>Chấm công - Tra cứu ca làm việc</h1>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
 
-  <div class="card">
-    <div id="reader"></div>
-    <div class="camera-fallback" id="cameraFallback">
-      <p>Không thể tự mở camera (trình duyệt chặn hoặc chưa cấp quyền).</p>
-      <button id="openCameraBtn">Mở camera</button>
+    <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-2xl p-6 space-y-5 border border-slate-700">
+        <h1 class="text-2xl font-black text-center text-cyan-400 tracking-wide">CHECK-IN NHÂN VIÊN</h1>
+
+        <!-- Khung quét Camera -->
+        <div class="relative rounded-xl overflow-hidden border-2 border-slate-600 bg-black min-h-[220px]">
+            <div id="reader" class="w-full"></div>
+            <!-- Kết nối tới data -->       
+            <div id="status-sync" class="text-base text-center text-slate-400 py-1.5 font-medium">Đang đồng bộ dữ liệu...</div>
+            
+            <!-- Màn hình hiển thị Tick (✓) hoặc Cross (✕) đè lên camera -->
+            <div id="overlay" class="absolute inset-0 flex flex-col items-center justify-center hidden z-50 p-2">
+            <div id="overlay-icon" class="text-[10rem] leading-none font-black icon-overlay"></div>
+            <div id="overlay-msg" class="text-4xl sm:text-5xl font-black mt-1 text-center tracking-wider"></div>
+            <div id="overlay-detail" class="text-2xl font-black mt-2 text-center text-white leading-tight"></div>
+            </div>
+        </div>
+
+        <!-- Khung Nhập Tay & Giọng Nói -->
+<div class="space-y-2 pt-1">
+    <div class="flex items-center gap-2 w-full">
+        <!-- Ô Nhập:  -->
+        <input type="text" id="manual-input" value="P" placeholder="Nhập phần số..." 
+            inputmode="numeric" pattern="[0-9]*"
+            class="flex-1 w-0 bg-slate-700 text-white px-3 py-2 rounded-lg text-base font-bold border border-slate-600 focus:outline-none focus:border-cyan-400">
+        
+        <!-- Nút Giọng nói -->
+        <button id="voice-btn" type="button" onclick="toggleVoiceRecognition()" title="Đọc Mã NV bằng giọng nói"
+            class="shrink-0 bg-slate-700 hover:bg-slate-600 p-2.5 rounded-lg border border-slate-600 text-cyan-400 flex items-center justify-center transition-colors active:scale-95">
+            <svg class="w-5 h-5 fill-current pointer-events-none" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+            </svg>
+        </button>
+        
+        <!-- Nút Gửi:-->
+        <button onclick="handleManualSubmit()" 
+            class="shrink-0 bg-cyan-600 hover:bg-cyan-500 font-bold px-3.5 py-2 rounded-lg text-sm whitespace-nowrap transition-colors active:scale-95">
+            Gửi
+        </button>
     </div>
-    <button id="rescanBtn" style="display:none;">Quét lại</button>
-  </div>
-
-  <div class="card">
-    <label for="idInput">Hoặc nhập mã nhân viên</label>
-    <div class="id-row">
-      <input id="idInput" type="text" inputmode="text" placeholder="Nhập ID..." autocomplete="off" />
-      <button id="lookupBtn">Tra cứu</button>
-    </div>
-    <div id="status"></div>
-  </div>
-
-  <div class="card result" id="resultBox">
-    <div class="label">Ca làm việc</div>
-    <div class="value" id="resultValue">-</div>
-    <div class="scanned-id" id="scannedIdLine"></div>
-  </div>
+    <div id="voice-status" class="text-xs font-semibold text-center text-yellow-400 hidden">🔴 Đang nghe... Hãy đọc Mã NV</div>
 </div>
 
-<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-<script>
-/* =========================================================================
-   CẤU HÌNH - chỉnh sửa các giá trị bên dưới cho đúng với Google Sheet của bạn
-   CONFIGURATION - edit the values below to match your Google Sheet
-   =========================================================================
+        <div class="text-center text-xs text-slate-400">
+            Đưa mã barcode trên thẻ nhân viên vào khung hình hoặc nhập mã trực tiếp
+        </div>
+    </div>
 
-   1) Mở Google Sheet của bạn > nút "Share" (Chia sẻ) > đổi thành
-      "Anyone with the link" / "Bất kỳ ai có đường liên kết" - vai trò "Viewer".
-      (Dữ liệu không nhạy cảm nên có thể để công khai xem - đây là cách đơn giản nhất,
-      không cần server, không cần API key.)
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbwRZdN-upyvEkQeVL9wJ2SVrAoTcrVxk7QsIe7LzXeycYDD9S8mXxWirJhVF6EUFrPn/exec"; 
+        
+        let employeeDatabase = [];
+        let isProcessing = false;
 
-   2) Lấy SHEET_ID từ URL của Google Sheet:
-      https://docs.google.com/spreadsheets/d/  >>> SHEET_ID <<<  /edit
-      Dán vào SHEET_ID bên dưới.
+        // Fetch danh sách nhân viên từ Google Sheets
+        async function fetchEmployees() {
+            try {
+                const res = await fetch(API_URL);
+                employeeDatabase = await res.json();
+                document.getElementById('status-sync').innerText = `✓ Danh sách có ${employeeDatabase.length} nhân viên`;
+                document.getElementById('status-sync').className = "text-xs text-center text-green-400 font-medium py-1";
+            } catch (err) {
+                document.getElementById('status-sync').innerText = '✗ Lỗi kết nối Google Sheets!';
+                document.getElementById('status-sync').className = "text-xs text-center text-red-400 font-medium py-1";
+            }
+        }
 
-   3) SHEET_NAME: tên chính xác của tab/sheet chứa dữ liệu (phân biệt hoa/thường).
+        // Ghi lịch sử check-in vào Google Sheets
+        async function logCheckin(logData) {
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(logData)
+                });
+            } catch (e) {
+                console.error("Lỗi ghi log:", e);
+            }
+        }
 
-   4) COL_ID / COL_DATE / COL_SHIFT: số thứ tự cột (0 = cột A, 1 = cột B, 2 = cột C...)
-      Mặc định giả định: cột A = ID nhân viên, cột B = Ngày, cột C = Ca làm việc.
-      Nếu sheet của bạn khác, chỉ cần đổi số ở đây, KHÔNG cần sửa gì khác.
-      ========================================================================= */
-const CONFIG = {
-  SHEET_ID: "1ReRlXz3sJJ06WSq2ZMC9zWZbDUKB13fEXIc_cs66LO0",
-  SHEET_NAME: "roster",
-  COL_ID: 0,
-  COL_DATE: 1,
-  COL_SHIFT: 2
-};
-/* ========================================================================= */
+        // Xử lý sự kiện Quét Barcode thành công
+        function onScanSuccess(decodedText) {
+            processCheckin(decodedText);
+        }
 
-const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`;
+        // Hàm xử lý chung cho Quét Barcode, Nhập tay và Giọng nói
+        function processCheckin(rawInput) {
+            if (isProcessing || !rawInput) return;
+            isProcessing = true;
 
-const idInput = document.getElementById('idInput');
-const statusEl = document.getElementById('status');
-const resultBox = document.getElementById('resultBox');
-const resultValue = document.getElementById('resultValue');
-const scannedIdLine = document.getElementById('scannedIdLine');
-const rescanBtn = document.getElementById('rescanBtn');
-const cameraFallback = document.getElementById('cameraFallback');
+            const scannedId = rawInput.trim().toUpperCase().replace(/\s+/g, '');
+            const employee = employeeDatabase.find(emp => emp.id.toUpperCase() === scannedId);
 
-function setStatus(msg, isError) {
-  statusEl.textContent = msg || '';
-  statusEl.style.color = isError ? '#dc2626' : '#6b7280';
-}
+            const overlay = document.getElementById('overlay');
+            const overlayIcon = document.getElementById('overlay-icon');
+            const overlayMsg = document.getElementById('overlay-msg');
+            const overlayDetail = document.getElementById('overlay-detail');
 
-function normalizeId(v) {
-  return String(v == null ? '' : v).trim().toUpperCase();
-}
+            overlay.classList.remove('hidden', 'bg-emerald-600/90', 'bg-rose-600/90');
 
-// Extract {y, mo, d} from many possible cell value/formatted representations
-function extractYMD(raw) {
-  if (raw === null || raw === undefined) return null;
-  const s = String(raw).trim();
-  let m = s.match(/^Date\((\d+),(\d+),(\d+)/); // gviz "Date(y,m,d)" m is 0-indexed
-  if (m) return { y: +m[1], mo: +m[2] + 1, d: +m[3] };
-  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); // ISO yyyy-mm-dd
-  if (m) return { y: +m[1], mo: +m[2], d: +m[3] };
-  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); // dd/mm/yyyy (common in VN)
-  if (m) return { y: +m[3], mo: +m[2], d: +m[1] };
-  const dt = new Date(s);
-  if (!isNaN(dt)) return { y: dt.getFullYear(), mo: dt.getMonth() + 1, d: dt.getDate() };
-  return null;
-}
+            if (employee) {
+                overlay.classList.add('bg-emerald-600/90');
+                overlayIcon.innerHTML = '✓';
+                overlayMsg.innerText = 'HỢP LỆ';
 
-function ymdEqual(a, b) {
-  return a && b && a.y === b.y && a.mo === b.mo && a.d === b.d;
-}
+                const shiftInfo = employee.shift ? `<br><span class="text-xl text-yellow-300 font-black">Ca: ${employee.shift}</span>` : '';
+                overlayDetail.innerHTML = `${employee.name} (${employee.id})${shiftInfo}`;
+                
+                logCheckin({
+                    id: employee.id,
+                    name: employee.name,
+                    status: "Hợp lệ"
+                });
+            } else {
+                overlay.classList.add('bg-rose-600/95');
+                overlayIcon.innerHTML = '✕';
+                overlayMsg.innerText = 'KHÔNG HỢP LỆ';
+                
+                overlayDetail.innerText = `Mã: ${scannedId}`;
 
-function todayYMD() {
-  const d = new Date();
-  return { y: d.getFullYear(), mo: d.getMonth() + 1, d: d.getDate() };
-}
+                logCheckin({
+                    id: scannedId,
+                    name: "N/A",
+                    status: "Không hợp lệ"
+                });
+            }
+            
+            fetchEmployees();
 
-function showResult(found, shiftValue, scannedId) {
-  resultBox.classList.add('show');
-  if (found) {
-    resultBox.className = 'result show found';
-    resultValue.textContent = shiftValue;
-    resultBox.querySelector('.label').textContent = 'Ca làm việc';
-  } else {
-    resultBox.className = 'result show notfound';
-    resultValue.textContent = 'Không có lịch làm việc';
-    resultBox.querySelector('.label').textContent = '';
-  }
-  scannedIdLine.textContent = scannedId ? ('Mã đã tra cứu: ' + scannedId) : '';
-}
+            document.getElementById('manual-input').value = '';
+            
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                isProcessing = false;
+            }, 2500);
+        }
 
-async function lookupShift(rawId) {
-  const targetId = normalizeId(rawId);
-  if (!targetId) return;
-  setStatus('Đang tra cứu...');
-  idInput.value = rawId;
-  try {
-    const res = await fetch(GVIZ_URL, { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const text = await res.text();
-    const jsonStart = text.indexOf('{');
-    const jsonEnd = text.lastIndexOf('}');
-    const json = JSON.parse(text.substring(jsonStart, jsonEnd + 1));
-    const rows = (json.table && json.table.rows) || [];
-    const today = todayYMD();
+        // Xử lý khi nhập tay
+        function handleManualSubmit() {
+            const val = document.getElementById('manual-input').value;
+            processCheckin(val);
+        }
 
-    let foundShift = null;
-    for (const row of rows) {
-      const cells = row.c || [];
-      const idCell = cells[CONFIG.COL_ID];
-      const dateCell = cells[CONFIG.COL_DATE];
-      const shiftCell = cells[CONFIG.COL_SHIFT];
-      if (!idCell) continue;
+        document.getElementById('manual-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleManualSubmit();
+            }
+        });
 
-      const rowId = normalizeId(idCell.v);
-      if (rowId !== targetId) continue;
+        const manualInput = document.getElementById('manual-input');
 
-      const rowYmd = extractYMD(dateCell && dateCell.v) || extractYMD(dateCell && dateCell.f);
-      if (!ymdEqual(rowYmd, today)) continue;
+        manualInput.addEventListener('input', function(e) {
+            let val = this.value.toUpperCase();
+            
+            if (!val.startsWith('P')) {
+                val = 'P' + val.replace(/[^0-9]/g, '');
+            } else {
+                val = 'P' + val.slice(1).replace(/[^0-9]/g, '');
+            }
+            
+            this.value = val;
+        });
+        
+        // XỬ LÝ GIỌNG NÓI - TỰ ĐỘNG LỌC LẤY SỐ VÀ NỐI CHỮ 'P'
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
 
-      foundShift = shiftCell ? (shiftCell.f || shiftCell.v) : null;
-      break;
-    }
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'vi-VN';
+            recognition.continuous = false;
+            recognition.interimResults = false;
 
-    setStatus('');
-    if (foundShift !== null && foundShift !== undefined && String(foundShift).trim() !== '') {
-      showResult(true, foundShift, rawId);
-    } else {
-      showResult(false, null, rawId);
-    }
-  } catch (err) {
-    setStatus('Lỗi tải dữ liệu từ Google Sheet: ' + err.message, true);
-  }
-}
+            recognition.onstart = function() {
+                const statusEl = document.getElementById('voice-status');
+                statusEl.innerText = "🔴 Đang nghe... Chỉ cần đọc phần SỐ";
+                statusEl.classList.remove('hidden');
+            };
 
-// ---- Manual ID input ----
-document.getElementById('lookupBtn').addEventListener('click', () => {
-  const val = idInput.value.trim();
-  if (val) lookupShift(val);
+            recognition.onend = function() {
+                document.getElementById('voice-status').classList.add('hidden');
+            };
+
+            recognition.onresult = function(event) {
+                const rawSpeech = event.results[0][0].transcript;
+                
+                const digitsOnly = rawSpeech.replace(/\D/g, '');
+
+                if (digitsOnly) {
+                    const finalEmployeeId = 'P' + digitsOnly;
+                    
+                    document.getElementById('manual-input').value = finalEmployeeId;
+                    processCheckin(finalEmployeeId);
+                } else {
+                    alert("Không nhận diện được số nào! Vui lòng đọc rõ phần chữ số.");
+                }
+            };
+
+            recognition.onerror = function(event) {
+                console.error("Lỗi giọng nói:", event.error);
+                document.getElementById('voice-status').classList.add('hidden');
+                
+                if (event.error === 'not-allowed') {
+                    alert("Bạn cần cấp quyền truy cập Micro cho ứng dụng/trình duyệt!");
+                } else if (event.error === 'service-not-allowed') {
+                    alert("Điện thoại yêu cầu trang web chạy kết nối HTTPS (https://) để mở Micro!");
+                } else {
+                    alert("Lỗi nhận diện giọng nói: " + event.error);
+                }
+            };
+        }
+
+        function toggleVoiceRecognition() {
+            if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+                alert("Nhận diện giọng nói trên điện thoại bắt buộc web phải chạy qua HTTPS (https://)!");
+                return;
+            }
+
+            if (!recognition) {
+                alert("Trình duyệt này không hỗ trợ Web Speech API! Bạn nên mở trên Chrome (Android) hoặc Safari (iOS).");
+                return;
+            }
+
+            try {
+                recognition.start();
+            } catch (e) {
+                recognition.stop();
+            }
+        }
+
+
+const html5QrCode = new Html5Qrcode("reader");
+
+// Đảm bảo DOM đã load xong kích thước khung chứa trước khi bật Camera
+window.addEventListener("DOMContentLoaded", () => {
+    html5QrCode.start(
+        { facingMode: "environment" },
+        {
+            fps: 15,
+            qrbox: { width: 260, height: 160 },
+            showTorchButtonIfSupported: true
+        },
+        onScanSuccess,
+        (errorMessage) => {
+            // Lỗi quét khung hình bình thường
+        }
+    ).catch(err => {
+        console.error("Không thể mở Camera:", err);
+    });
 });
-idInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const val = idInput.value.trim();
-    if (val) lookupShift(val);
-  }
-});
 
-// ---- Barcode / QR scanner (auto-starts using rear camera) ----
-let html5QrCode;
-let lastScan = '';
-let lastScanTime = 0;
-
-function onScanSuccess(decodedText) {
-  const now = Date.now();
-  if (decodedText === lastScan && now - lastScanTime < 3000) return; // debounce repeat scans
-  lastScan = decodedText;
-  lastScanTime = now;
-  if (navigator.vibrate) navigator.vibrate(80);
-  lookupShift(decodedText);
-}
-
-function startScanner() {
-  cameraFallback.style.display = 'none';
-  html5QrCode = new Html5Qrcode("reader");
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: { width: 260, height: 160 } },
-    onScanSuccess,
-    () => { /* ignore per-frame decode errors */ }
-  ).then(() => {
-    rescanBtn.style.display = 'block';
-  }).catch((err) => {
-    cameraFallback.style.display = 'block';
-    setStatus('Không thể mở camera tự động. Bạn có thể nhập ID thủ công bên dưới.', true);
-  });
-}
-
-document.getElementById('openCameraBtn').addEventListener('click', startScanner);
-rescanBtn.addEventListener('click', () => {
-  lastScan = '';
-  setStatus('Đang quét...');
-});
-
-window.addEventListener('load', startScanner);
-</script>
+        fetchEmployees();
+    </script>
 </body>
 </html>
