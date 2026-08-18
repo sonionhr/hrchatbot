@@ -29,47 +29,48 @@
 </head>
 <body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-2xl p-6 space-y-4 border border-slate-700">
-        <h1 class="text-xl font-bold text-center text-cyan-400">CHECK-IN NHÂN VIÊN</h1>
+    <div class="max-w-md w-full bg-slate-800 rounded-2xl shadow-2xl p-6 space-y-5 border border-slate-700">
+        <h1 class="text-2xl font-black text-center text-cyan-400 tracking-wide">CHECK-IN NHÂN VIÊN</h1>
 
         <!-- Khung quét Camera -->
         <div class="relative rounded-xl overflow-hidden border-2 border-slate-600 bg-black min-h-[220px]">
             <div id="reader" class="w-full"></div>
             <!-- Kết nối tới data -->       
-            <div id="status-sync" class="text-xs text-center text-slate-400 py-1">Đang đồng bộ dữ liệu...</div>
+            <div id="status-sync" class="text-base text-center text-slate-400 py-1.5 font-medium">Đang đồng bộ dữ liệu...</div>
             
             <!-- Màn hình hiển thị Tick (✓) hoặc Cross (✕) đè lên camera -->
-            <div id="overlay" class="absolute inset-0 flex flex-col items-center justify-center hidden z-50">
-                <div id="overlay-icon" class="text-8xl font-black icon-overlay"></div>
-                <div id="overlay-msg" class="text-lg font-bold mt-2 px-4 text-center"></div>
-                <div id="overlay-detail" class="text-sm mt-1 text-slate-200"></div>
+            <div id="overlay" class="absolute inset-0 flex flex-col items-center justify-center hidden z-50 p-2">
+            <div id="overlay-icon" class="text-[10rem] leading-none font-black icon-overlay"></div>
+            <div id="overlay-msg" class="text-4xl sm:text-5xl font-black mt-1 text-center tracking-wider"></div>
+            <div id="overlay-detail" class="text-2xl font-black mt-2 text-center text-white leading-tight"></div>
             </div>
         </div>
 
         <!-- Khung Nhập Tay & Giọng Nói -->
-        <div class="space-y-2 pt-1">
-            <div class="flex items-center space-x-2">
-               <input type="text" id="manual-input" value="P" placeholder="Nhập phần số..." 
-    inputmode="numeric" pattern="[0-9]*"
-    class="flex-1 bg-slate-700 text-white px-3 py-2 rounded-lg text-sm border border-slate-600 focus:outline-none focus:border-cyan-400">
-                
-                <!-- Nút Giọng nói -->
-                <button id="voice-btn" type="button" onclick="toggleVoiceRecognition()" title="Đọc Mã NV bằng giọng nói"
-                    class="bg-slate-700 hover:bg-slate-600 p-2.5 rounded-lg border border-slate-600 text-cyan-400 flex items-center justify-center transition-colors active:scale-95">
-                    <svg class="w-5 h-5 fill-current pointer-events-none" viewBox="0 0 24 24">
-                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
-                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
-                    </svg>
-                </button>
-                
-                <!-- Nút Gửi Mã -->
-                <button onclick="handleManualSubmit()" 
-                    class="bg-cyan-600 hover:bg-cyan-500 font-semibold px-4 py-2 rounded-lg text-sm">
-                    Gửi
-                </button>
-            </div>
-            <div id="voice-status" class="text-xs text-center text-yellow-400 hidden">🔴 Đang nghe... Hãy đọc Mã NV</div>
-        </div>
+<div class="space-y-2 pt-1">
+    <div class="flex items-center gap-2 w-full">
+        <!-- Ô Nhập:  -->
+        <input type="text" id="manual-input" value="P" placeholder="Nhập phần số..." 
+            inputmode="numeric" pattern="[0-9]*"
+            class="flex-1 w-0 bg-slate-700 text-white px-3 py-2 rounded-lg text-base font-bold border border-slate-600 focus:outline-none focus:border-cyan-400">
+        
+        <!-- Nút Giọng nói -->
+        <button id="voice-btn" type="button" onclick="toggleVoiceRecognition()" title="Đọc Mã NV bằng giọng nói"
+            class="shrink-0 bg-slate-700 hover:bg-slate-600 p-2.5 rounded-lg border border-slate-600 text-cyan-400 flex items-center justify-center transition-colors active:scale-95">
+            <svg class="w-5 h-5 fill-current pointer-events-none" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+            </svg>
+        </button>
+        
+        <!-- Nút Gửi:-->
+        <button onclick="handleManualSubmit()" 
+            class="shrink-0 bg-cyan-600 hover:bg-cyan-500 font-bold px-3.5 py-2 rounded-lg text-sm whitespace-nowrap transition-colors active:scale-95">
+            Gửi
+        </button>
+    </div>
+    <div id="voice-status" class="text-xs font-semibold text-center text-yellow-400 hidden">🔴 Đang nghe... Hãy đọc Mã NV</div>
+</div>
 
         <div class="text-center text-xs text-slate-400">
             Đưa mã barcode trên thẻ nhân viên vào khung hình hoặc nhập mã trực tiếp
@@ -77,7 +78,7 @@
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbxjLyM0VTGz8MeHGxAk7C-yuJht9J3LB9upFiDk9T8Vz3vjZm3m4XU0WMFRusjudnqV/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbxekhSD0JtwHzIBMOmcArO6kHRIdY3JBky6B6TsYRB6_TcpylUpJxejjO5VA5ltACT5/exec"; 
         
         let employeeDatabase = [];
         let isProcessing = false;
@@ -134,7 +135,7 @@
                 overlayIcon.innerHTML = '✓';
                 overlayMsg.innerText = 'HỢP LỆ';
 
-                const shiftInfo = employee.shift ? `<br><span class="text-xs text-amber-300 font-semibold">Ca: ${employee.shift}</span>` : '';
+                const shiftInfo = employee.shift ? `<br><span class="text-xl text-yellow-300 font-black">Ca: ${employee.shift}</span>` : '';
                 overlayDetail.innerHTML = `${employee.name} (${employee.id})${shiftInfo}`;
                 
                 logCheckin({
@@ -143,7 +144,7 @@
                     status: "Hợp lệ"
                 });
             } else {
-                overlay.classList.add('bg-rose-600/90');
+                overlay.classList.add('bg-rose-600/95');
                 overlayIcon.innerHTML = '✕';
                 overlayMsg.innerText = 'KHÔNG HỢP LỆ';
                 
@@ -259,7 +260,7 @@
             }
         }
 
-        // KHỞI TẠO TỰ ĐỘNG MỞ CAMERA SAU VÀ VẼ KHUNG QUÉT TỐI ƯU CHO ANDROID
+
 const html5QrCode = new Html5Qrcode("reader");
 
 // Đảm bảo DOM đã load xong kích thước khung chứa trước khi bật Camera
@@ -268,9 +269,7 @@ window.addEventListener("DOMContentLoaded", () => {
         { facingMode: "environment" },
         {
             fps: 15,
-            // Khai báo kích thước khung quét rõ ràng bằng pixel
             qrbox: { width: 260, height: 160 },
-            // Bật tính năng vẽ lại viền bao quanh vật thể quét
             showTorchButtonIfSupported: true
         },
         onScanSuccess,
