@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,8 @@
     --shadow:  0 2px 12px rgba(0,0,0,.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--grey); color: var(--text); font-size: 14px; line-height: 1.6; }
+  html, body { max-width: 100%; overflow-x: hidden; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--grey); color: var(--text); font-size: 14px; line-height: 1.6; overflow-wrap: break-word; word-break: break-word; }
 
   /* ── Header ── */
   .header { background: var(--blue); color: #fff; padding: 28px 40px; display: flex; align-items: center; gap: 20px; }
@@ -39,6 +40,7 @@
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
   .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
   .col-span-2 { grid-column: span 2; }
+  .grid-2 > *, .grid-3 > *, .grid-4 > * { min-width: 0; }
 
   /* ── Cards ── */
   .card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; }
@@ -62,7 +64,7 @@
 
   /* ── Salary timeline ── */
   .pay-timeline { display: flex; align-items: stretch; gap: 0; }
-  .pay-step { flex: 1; text-align: center; position: relative; }
+  .pay-step { flex: 1; min-width: 0; text-align: center; position: relative; }
   .pay-step::after { content:''; position:absolute; top:22px; right:0; width:100%; height:2px; background:var(--border); z-index:0; }
   .pay-step:last-child::after { display:none; }
   .pay-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin: 0 auto 8px; position: relative; z-index: 1; }
@@ -74,10 +76,11 @@
   .pay-amount { font-size: 12px; font-weight: 700; color: var(--orange); margin-top: 3px; }
 
   /* ── Tables ── */
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table { width: 100%; max-width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
   th { background: var(--blue); color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 12px; }
   th:first-child { border-radius: 6px 0 0 0; }
   th:last-child  { border-radius: 0 6px 0 0; }
+  th, td { word-break: break-word; overflow-wrap: break-word; }
   td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
   tr:last-child td { border-bottom: none; }
   tr:nth-child(even) td { background: var(--grey); }
@@ -149,7 +152,49 @@
 
   /* ── Footer ── */
   .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 10px; }
+
+  /* ── Responsive (tablet / mobile) ── */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 768px) {
+    .header { padding: 16px 20px; flex-wrap: wrap; gap: 10px; }
+    .header-badge { margin-left: 0; }
+    .container { padding: 18px 12px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .col-span-2 { grid-column: span 1; }
+    .card { padding: 16px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 7px 8px; }
+    .pay-timeline { flex-wrap: wrap; gap: 16px 10px; }
+    .pay-step { flex: 1 1 40%; }
+    .pay-step::after { display: none; }
+    .ot-label { width: 100px; font-size: 11px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 13px; }
+    .header-logo { font-size: 22px; }
+    .header-text h1 { font-size: 16px; }
+    .header-text p { font-size: 11px; }
+    .header-badge { font-size: 11px; padding: 5px 12px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .stat-val { font-size: 20px; }
+    .card-title { font-size: 12px; }
+    table { font-size: 11px; }
+    th, td { padding: 6px 7px; }
+    .contact-item { flex-wrap: wrap; }
+    .contact-num { width: 100%; padding-left: 28px; }
+  }
 </style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_dlc_DocId msdt:dt="string">M7AD5DXWA54W-1745450731-162</mso:_dlc_DocId>
+<mso:_dlc_DocIdItemGuid msdt:dt="string">9be0d7e0-171d-4108-a222-b4147eb1597d</mso:_dlc_DocIdItemGuid>
+<mso:_dlc_DocIdUrl msdt:dt="string">https://sonion.sharepoint.com/departments/hr/vn/_layouts/15/DocIdRedir.aspx?ID=M7AD5DXWA54W-1745450731-162, M7AD5DXWA54W-1745450731-162</mso:_dlc_DocIdUrl>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
 </head>
 <body>
 
@@ -266,7 +311,7 @@
           <tr><td>Trợ cấp sinh hoạt</td><td><strong>400.000 đ</strong>/tháng</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Quà lễ / sinh nhật</td><td><strong>200.000 đ</strong>/dịp</td><td>Tất cả nhân viên</td></tr>
           <tr><td>Thưởng chuyên cần</td><td><strong>500.000 đ</strong>/tháng</td><td>Làm việc đủ đến cuối tháng</td></tr>
-          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Nhân viên chính thức; Yield & Productivity</td></tr>
+          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Tính từ ngày bắt đầu làm việc (kể cả thử việc); Yield & Productivity</td></tr>
         </tbody>
       </table>
     </div>
@@ -321,6 +366,7 @@
         </div>
       </div>
       <div class="note">🚫 Đang bị xử lý kỷ luật → không được xét tăng lương.</div>
+      <div class="note">💰 Phụ thuộc vào ngân sách tại thời điểm.</div>
     </div>
   </div>
 
@@ -348,10 +394,10 @@
       <table>
         <thead><tr><th>Loại BH</th><th>Nhân viên đóng</th><th>Công ty đóng</th></tr></thead>
         <tbody>
-          <tr><td>BHXH</td><td>8%</td><td>17%</td></tr>
+          <tr><td>BHXH</td><td>8%</td><td>17,5%</td></tr>
           <tr><td>BHYT</td><td>1,5%</td><td>3%</td></tr>
           <tr><td>BHTN</td><td>1%</td><td>1%</td></tr>
-          <tr><td style="font-weight:700">Tổng</td><td><strong>10,5%</strong></td><td><strong>21%</strong></td></tr>
+          <tr><td style="font-weight:700">Tổng</td><td><strong>10,5%</strong></td><td><strong>21,5%</strong></td></tr>
         </tbody>
       </table>
       <div class="note">✅ Tham gia BHXH + BHYT ngay từ <strong>tháng thử việc đầu tiên</strong>.</div>
@@ -370,12 +416,24 @@
     </div>
     <div class="card">
       <div class="card-title"><span class="icon">📞</span> Liên hệ HR</div>
-      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng / Hợp đồng thử việc</span><span class="contact-num">028 3736 2019</span></div>
-      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức / Bảo hiểm</span><span class="contact-num">028 3736 2018</span></div>
-      <div class="contact-item"><span class="contact-icon">💵</span><span class="contact-topic">Lương</span><span class="contact-num">028 3736 2021</span></div>
-      <div class="contact-item"><span class="contact-icon">🔑</span><span class="contact-topic">Tủ locker</span><span class="contact-num">028 3736 2483</span></div>
-      <div class="contact-item"><span class="contact-icon">💻</span><span class="contact-topic">Yêu cầu chung</span><span class="contact-num">Cadena / HR Helpdesk · Máy Trạm</span></div>
+      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng & hợp đồng thử việc</span><span class="contact-num">028 3736 2019 / 0903 345 921</span></div>
+      <div class="contact-item"><span class="contact-icon">🏥</span><span class="contact-topic">Y tế – Phòng sữa mẹ</span><span class="contact-num">028 3736 2483</span></div>
+      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức, bảo hiểm & lương</span><span class="contact-num">028 3736 2018 / 028 3736 2021 / 028 3736 2105</span></div>
     </div>
+  </div>
+
+  <!-- LIÊN HỆ THEO VẤN ĐỀ CỤ THỂ -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-title"><span class="icon">🧭</span> Liên hệ theo từng vấn đề cụ thể</div>
+    <table>
+      <tr><th>Hạng mục</th><th>Chi tiết</th><th>Người liên hệ</th></tr>
+      <tr><td>Đồng phục</td><td>Nhận/mua đồng phục, thu đồng phục khi nghỉ việc; mua thêm áo cam, giày, áo smock, ổ khóa; vấn đề tủ phòng sạch</td><td>Trợ lý sản xuất</td></tr>
+      <tr><td>Hệ thống ESD</td><td>Thông tin liên quan đến hệ thống ESD</td><td>Trợ lý sản xuất</td></tr>
+      <tr><td>Giấy tờ nghỉ ốm / khám thai</td><td>Giấy tờ BHXH, Giấy 28 tuần điều chỉnh chế độ thai sản; phép nghỉ cưới, nghỉ tang, mừng đoàn viên sinh con, thăm bệnh đoàn viên</td><td>Trưởng nhóm</td></tr>
+      <tr><td>Giấy xác minh đi sớm/về trễ, OT, kỷ luật</td><td>Giấy xác nhận giờ làm bất thường, OT, Feedback Form, Field Report</td><td>Trưởng ca</td></tr>
+      <tr><td>Locker</td><td>Tủ hư hỏng, cần đổi/sửa, mất chìa khóa cần cấp lại, quên chìa khóa cần mở trong ngày</td><td>Nhân viên dịch vụ bộ phận sản xuất</td></tr>
+      <tr><td>Vấn đề khác</td><td>Sản lượng, chất lượng, quy định công ty...</td><td>Trưởng nhóm, Trưởng ca</td></tr>
+    </table>
   </div>
 
   <!-- QUY ĐỊNH LÀM VIỆC -->
@@ -451,7 +509,7 @@
               <li>Nộp <strong>đơn thôi việc</strong></li>
             </ul>
             <br><strong>Truy cập:</strong> cadena.sonion.com/Login.aspx<br>
-            <strong>Nhân viên DL:</strong> Dùng <strong>máy trạm dọc hành lang</strong> trong nhà máy.
+            <strong>Nhân viên DL:</strong> Dùng <strong>máy trạm dọc hành lang</strong> hoặc <strong>trên điện thoại, đăng nhập vào Cadena wifi</strong> trong nhà máy.
           </div>
         </div>
 
@@ -464,7 +522,7 @@
           <div class="faq-a">
             HR sẽ cấp mật khẩu ban đầu khi vào làm. Nếu chưa nhận được, tự cấp lại theo 3 bước:
             <ol style="margin:8px 0 0 14px">
-              <li>Chrome tại máy trạm → <strong>cadena.sonion.com</strong> → chọn <strong>"Quên mật khẩu"</strong></li>
+              <li>Mở Google Chrome tại máy trạm hoặc Cadena trên điện thoại → <strong>cadena.sonion.com</strong> → chọn <strong>"Quên mật khẩu"</strong></li>
               <li>Nhập <strong>mã số nhân viên</strong> + <strong>mã xác thực</strong> → nhấn <strong>Gửi</strong></li>
               <li>Nhận mật khẩu qua <strong>Slack</strong> hoặc <strong>Cổng Hỗ trợ Nhân sự → Cấp mật khẩu Cadena</strong></li>
             </ol>
@@ -506,6 +564,74 @@
               <li>Đăng ký bằng <strong>email cá nhân</strong> (Gmail, iCloud...)</li>
             </ol>
             <div style="margin-top:8px;font-size:12px;color:var(--muted)">Gặp lỗi: chọn "Xử lý lỗi Slack" trên cùng trang Zalo.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi được yêu cầu làm ca linh hoạt — làm sao để xác nhận đồng ý?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Nếu được yêu cầu làm việc theo <strong>ca làm việc linh hoạt</strong>, bạn cần xác nhận đồng ý qua biểu mẫu điện tử <strong>"Đồng thuận với ca làm việc linh hoạt"</strong>.<br><br>
+            Nếu chưa nhận được đường dẫn (link) vào biểu mẫu:
+            <ol style="margin:6px 0 0 14px">
+              <li>Vào <strong>Cổng Hỗ trợ Nhân sự (HR Request Center)</strong></li>
+              <li>Chọn <strong>"Gửi yêu cầu cho Nhân sự / HR Helpdesk"</strong></li>
+              <li>Chọn mục cấp link vào ký <strong>Ca làm việc linh hoạt</strong></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">🍽️ Cơ sở vật chất & Phúc lợi tại chỗ</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Mã thẻ canteen là gì? Lấy ở đâu?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Mã thẻ canteen</strong> là mã định danh nhân viên Sonion dùng để sử dụng voucher điện tử tại canteen. Khi các phòng ban cấp voucher qua các chương trình như <strong>5S, Kaizen</strong>, hoặc các khoản trợ cấp (VD: độc hại), số tiền sẽ được chuyển vào mã thẻ canteen để sử dụng.<br><br>
+            <strong>Cách lấy mã thẻ:</strong>
+            <ol style="margin:6px 0 0 14px">
+              <li>Vào <strong>Cổng Hỗ trợ Nhân sự (HR Request Center)</strong></li>
+              <li>Chọn mục <strong>"Xem số dư thẻ canteen / Canteen card balance"</strong></li>
+              <li>Nhấn nút <strong>"Lấy mã thẻ canteen / Get the canteen card"</strong></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Canteen Sonion phục vụ những gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Nhà ăn Sonion phục vụ bữa ăn hằng ngày với thực đơn đa dạng và thay đổi liên tục:
+            <ul style="margin:6px 0 0 14px">
+              <li>Hơn <strong>600 món mặn</strong></li>
+              <li>Hơn <strong>200 món chay</strong></li>
+              <li><strong>63 món nước</strong> cùng nhiều món tráng miệng</li>
+            </ul>
+            Mỗi tháng có <strong>1 bữa ăn đặc biệt</strong> dành cho toàn thể nhân viên.
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)">Góp ý: điền phiếu tại "Hộp thư góp ý" ở cửa ra vào nhà ăn, hoặc gọi hotline 0909 024 804.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Phòng Y tế và Phòng Sữa mẹ ở đâu? Dùng để làm gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Phòng Y Tế:</strong> cung cấp các loại thuốc cơ bản (ho, cảm, sốt...) khi cần thiết. Thuốc theo toa bác sĩ vui lòng tự chuẩn bị — Phòng Y Tế không hỗ trợ cấp phát loại này.<br><br>
+            <strong>Phòng Sữa Mẹ:</strong> dành cho nhân viên nữ có con nhỏ dưới 1 tuổi khi quay lại làm việc sau thai sản. Quyền lợi: sử dụng phòng + nhận 1 bình sữa/nhân viên. Đăng ký tại Phòng Nhân sự để được hướng dẫn.
           </div>
         </div>
       </div>
@@ -574,14 +700,19 @@
             <div class="faq-chevron">▼</div>
           </div>
           <div class="faq-a">
-            Có. Nhân viên sản xuất (Operator) nhận việc từ <strong>10/11/2025</strong> nhận thưởng theo 2 mốc:
+            Có. Nhân viên sản xuất (Operator) nhận việc lần đầu tại Sonion (hoặc nhân viên cũ quay lại sau khi đã nghỉ việc từ 180 ngày trở lên) nhận thưởng theo 3 mốc, mức thưởng tùy nhóm công việc:
             <table style="margin-top:8px">
-              <tr><th>Mốc</th><th>Mức thưởng</th></tr>
-              <tr><td>Sau khi hoàn tất thử việc</td><td><strong>1.500.000 đ</strong></td></tr>
-              <tr><td>Sau 3 tháng làm việc liên tục</td><td><strong>1.500.000 đ</strong></td></tr>
+              <tr><th>Mốc</th><th>Nhóm nhìn kính<br><span style="font-weight:400;font-size:11px">(từ 01/06/2026)</span></th><th>Nhóm không nhìn kính<br><span style="font-weight:400;font-size:11px">(từ 15/06/2026)</span></th></tr>
+              <tr><td>Đủ 1 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td>Đủ 2 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td>Đủ 3 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td><strong>Tổng / 3 tháng</strong></td><td><strong>4.500.000 đ</strong></td><td><strong>3.000.000 đ</strong></td></tr>
             </table>
             <div style="margin-top:8px;padding:7px 10px;background:var(--blue-lt);border-radius:6px;font-size:12px;color:#1E3A5F">
-              📌 Nhóm nhận việc <strong>08/10–09/11/2025</strong>: nhận 1.500.000 đ nếu làm đến hết <strong>09/02/2026</strong> — chi trả ngày 05/03/2026. Thông báo qua <strong>Slack</strong>.
+              📌 <strong>Điều kiện:</strong> Đạt yêu cầu thử việc; không nghỉ quá 2 ngày trong tháng làm việc đầu tiên; tổng số ngày nghỉ không quá 3 ngày trong 3 tháng đầu (không tính nghỉ do công ty sắp xếp hoặc bất khả kháng).
+            </div>
+            <div style="margin-top:6px;padding:7px 10px;background:var(--blue-lt);border-radius:6px;font-size:12px;color:#1E3A5F">
+              📌 <strong>Lịch nhận thưởng tháng 1</strong> (N = tháng nhận việc): vào làm ngày 01–10 → nhận ngày 12 tháng N+1; ngày 11–18 → nhận ngày 20 tháng N+1; ngày 19–31 → nhận ngày 05 tháng N+2. Thưởng tháng 2 & 3 trả cùng kỳ lương tương ứng.
             </div>
           </div>
         </div>
@@ -596,14 +727,9 @@
             <div style="padding:8px 10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green);margin-bottom:10px">
               ✅ <strong>Chậm nhất 25 ngày kể từ ngày vào làm</strong>, bạn sẽ có thẻ BHYT hiển thị trên VssID.
             </div>
-            Điều kiện để có thẻ ngay trong tháng đầu:
-            <table style="margin-top:8px">
-              <tr><th>Điều kiện</th><th>Yêu cầu</th></tr>
-              <tr><td>Ngày ký hợp đồng</td><td>Từ <strong>ngày 1 đến ngày 15</strong> của tháng</td></tr>
-              <tr><td>Số ngày làm việc</td><td>Đủ <strong>13 ngày</strong> trở lên trong tháng đó</td></tr>
-            </table>
+            Điều kiện để có thẻ ngay trong tháng đầu: tổng số ngày nghỉ không hưởng lương trong tháng (= công chuẩn − số ngày hưởng lương, tính từ ngày vào làm) phải <strong>dưới 14 ngày</strong>.
             <div style="margin-top:8px;font-size:12px;color:var(--muted)">
-              Không đáp ứng đủ → thẻ có hiệu lực từ <strong>đầu tháng tiếp theo</strong>.<br>
+              Không đáp ứng đủ → tham gia BHXH/BHYT/BHTN từ tháng sau, thẻ có hiệu lực từ <strong>đầu tháng tiếp theo</strong>.<br>
               Kiểm tra thẻ: mở <strong>VssID</strong> → "Thẻ BHYT".
             </div>
           </div>
@@ -621,8 +747,8 @@
               <tr><th>Khoản</th><th>Ghi chú</th></tr>
               <tr><td>Toàn bộ tiền OT</td><td>Luật 109/2025/QH15</td></tr>
               <tr><td>Toàn bộ tiền lương ca đêm</td><td>Luật 109/2025/QH15</td></tr>
-              <tr><td>Phụ cấp cơm</td><td>Miễn thuế</td></tr>
-              <tr><td>Phụ cấp điện thoại</td><td>Theo hạn mức</td></tr>
+              <tr><td>Phụ cấp cơm</td><td>Miễn thuế ≤ 1.200.000đ/tháng</td></tr>
+              <tr><td>Phụ cấp điện thoại (nếu có)</td><td>Theo hạn mức</td></tr>
             </table>
             <div style="margin:10px 0 6px"><strong style="color:var(--orange)">⚠️ Tính thuế:</strong> Lương cơ bản + thưởng + phụ cấp sinh hoạt — sau đó trừ thêm:</div>
             <ul>
@@ -652,8 +778,8 @@
               <li>❌ Không dùng điện thoại cá nhân trong khu sản xuất → ra <strong>Calling Place</strong></li>
               <li>❌ Không ăn uống, ngủ hoặc chơi game trong khu làm việc</li>
               <li>❌ Không đưa tài sản công ty ra ngoài</li>
-              <li>✅ Khóa tủ locker, không để đồ giá trị trên 50.000 đ trong tủ</li>
-              <li>✅ Hút thuốc đúng khu vực quy định</li>
+              <li>✅ Khóa tủ locker cẩn thận, không để đồ vật có giá trị trên 50.000 đ, không được phép đổi tủ với nhân viên khác</li>
+              <li>✅ Hút thuốc trong khu vực và thời gian được quy định</li>
             </ul>
           </div>
         </div>
@@ -715,11 +841,7 @@
             <div class="faq-chevron">▼</div>
           </div>
           <div class="faq-a">
-            Hệ thống có thể ghi trễ 1–2 phút. Công ty cho phép đến trễ <strong>trong vòng 10 phút</strong> nên khoảng trễ này nằm trong giới hạn cho phép.
-            <ul style="margin:8px 0 0 14px">
-              <li>Ghi trễ <strong>hơn 2 phút</strong> → báo <strong>Phòng Nhân sự</strong> trong giờ hành chính</li>
-              <li>Ngoài giờ hành chính → chấm công bình thường, báo <strong>Quản lý trực tiếp</strong> để họ thông báo HR sau</li>
-            </ul>
+            Nếu hệ thống ghi trễ, liên hệ <strong>Trưởng ca</strong> để Trưởng ca báo với <strong>Nhân sự</strong>. Nhân viên không được phép đi trễ.
           </div>
         </div>
 
