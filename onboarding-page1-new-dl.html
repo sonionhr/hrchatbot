@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:mso="urn:schemas-microsoft-com:office:office" xmlns:msdt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonion VN — Hướng dẫn Nhân viên Sản xuất Mới</title>
+<style>
+  :root {
+    --blue:    #0057A8;
+    --blue-lt: #E8F0FB;
+    --teal:    #00879A;
+    --teal-lt: #E0F5F7;
+    --orange:  #E87722;
+    --orange-lt:#FEF3E8;
+    --green:   #2E8B57;
+    --green-lt:#EAF6EE;
+    --red:     #C0392B;
+    --grey:    #F4F6F9;
+    --text:    #1A1A2E;
+    --muted:   #6B7280;
+    --border:  #DDE3ED;
+    --radius:  10px;
+    --shadow:  0 2px 12px rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { max-width: 100%; overflow-x: hidden; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--grey); color: var(--text); font-size: 14px; line-height: 1.6; overflow-wrap: break-word; word-break: break-word; }
+
+  /* ── Header ── */
+  .header { background: var(--blue); color: #fff; padding: 28px 40px; display: flex; align-items: center; gap: 20px; }
+  .header-logo { font-size: 28px; font-weight: 800; letter-spacing: 1px; }
+  .header-logo span { color: #7EC8E3; }
+  .header-text h1 { font-size: 20px; font-weight: 700; }
+  .header-text p  { font-size: 13px; opacity: .8; margin-top: 2px; }
+  .header-badge { margin-left: auto; background: rgba(255,255,255,.15); border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 600; }
+
+  /* ── Layout ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+  .col-span-2 { grid-column: span 2; }
+  .grid-2 > *, .grid-3 > *, .grid-4 > * { min-width: 0; }
+
+  /* ── Cards ── */
+  .card { background: #fff; border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; }
+  .card-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .card-title .icon { font-size: 16px; }
+
+  /* ── Section header ── */
+  .section-header { display: flex; align-items: center; gap: 10px; margin: 28px 0 14px; }
+  .section-header h2 { font-size: 16px; font-weight: 700; color: var(--blue); }
+  .section-header::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* ── Shift cards ── */
+  .shift-card { border-radius: var(--radius); padding: 18px; text-align: center; border: 2px solid transparent; }
+  .shift-card.ca1 { background: #EAF4FF; border-color: #90C2F5; }
+  .shift-card.ca2 { background: #FFF6E8; border-color: #F5C07A; }
+  .shift-card.ca3 { background: #F0E8FF; border-color: #C5A8F5; }
+  .shift-name { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+  .shift-time { font-size: 22px; font-weight: 800; color: var(--text); }
+  .shift-break { margin-top: 8px; font-size: 12px; background: rgba(0,0,0,.06); border-radius: 20px; padding: 3px 10px; display: inline-block; }
+  .shift-note  { margin-top: 6px; font-size: 11px; color: var(--muted); font-style: italic; }
+
+  /* ── Salary timeline ── */
+  .pay-timeline { display: flex; align-items: stretch; gap: 0; }
+  .pay-step { flex: 1; min-width: 0; text-align: center; position: relative; }
+  .pay-step::after { content:''; position:absolute; top:22px; right:0; width:100%; height:2px; background:var(--border); z-index:0; }
+  .pay-step:last-child::after { display:none; }
+  .pay-dot { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin: 0 auto 8px; position: relative; z-index: 1; }
+  .pay-dot.blue   { background: var(--blue);   color:#fff; }
+  .pay-dot.orange { background: var(--orange); color:#fff; }
+  .pay-dot.green  { background: var(--green);  color:#fff; }
+  .pay-day  { font-size: 20px; font-weight: 800; color: var(--text); }
+  .pay-label{ font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .pay-amount { font-size: 12px; font-weight: 700; color: var(--orange); margin-top: 3px; }
+
+  /* ── Tables ── */
+  table { width: 100%; max-width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+  th { background: var(--blue); color: #fff; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 12px; }
+  th:first-child { border-radius: 6px 0 0 0; }
+  th:last-child  { border-radius: 0 6px 0 0; }
+  th, td { word-break: break-word; overflow-wrap: break-word; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--grey); }
+
+  /* ── Stat boxes ── */
+  .stat-box { border-radius: var(--radius); padding: 16px; text-align: center; }
+  .stat-box.blue   { background: var(--blue-lt);   border-left: 4px solid var(--blue); }
+  .stat-box.teal   { background: var(--teal-lt);   border-left: 4px solid var(--teal); }
+  .stat-box.orange { background: var(--orange-lt); border-left: 4px solid var(--orange); }
+  .stat-box.green  { background: var(--green-lt);  border-left: 4px solid var(--green); }
+  .stat-val  { font-size: 24px; font-weight: 800; }
+  .stat-unit { font-size: 11px; font-weight: 600; color: var(--muted); }
+  .stat-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+  /* ── OT rate ── */
+  .ot-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .ot-label { width: 140px; font-size: 12px; }
+  .ot-track { flex: 1; background: var(--grey); border-radius: 20px; height: 22px; overflow: hidden; }
+  .ot-fill  { height: 100%; border-radius: 20px; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 700; color: #fff; }
+  .ot-fill.p150 { width:50%; background: var(--teal); }
+  .ot-fill.p200 { width:67%; background: var(--orange); }
+  .ot-fill.p300 { width:100%; background: var(--red); }
+
+  /* ── Discipline ── */
+  .disc-row { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .disc-badge { min-width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #fff; }
+  .disc-A { background: #3B82F6; }
+  .disc-B { background: #F59E0B; }
+  .disc-C { background: #EF4444; }
+  .disc-D { background: #1F2937; }
+  .disc-text { font-size: 13px; padding-top: 4px; }
+
+  /* ── Contact ── */
+  .contact-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-icon { font-size: 18px; }
+  .contact-topic { font-weight: 600; flex: 1; }
+  .contact-num { color: var(--blue); font-weight: 700; }
+
+  /* ── Tags ── */
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .tag-blue   { background: var(--blue-lt);   color: var(--blue); }
+  .tag-orange { background: var(--orange-lt); color: var(--orange); }
+  .tag-green  { background: var(--green-lt);  color: var(--green); }
+
+  /* ── Note box ── */
+  .note { background: #FFFBEA; border-left: 4px solid #F59E0B; border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 12px; color: #7B5700; margin-top: 10px; }
+
+  /* ── FAQ ── */
+  .faq-group { margin-bottom: 20px; }
+  .faq-group-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--blue); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 2px solid var(--blue-lt); }
+  .faq-item { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; overflow: hidden; }
+  .faq-q { display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; background: #fff; cursor: pointer; }
+  .faq-q:hover { background: var(--blue-lt); }
+  .faq-badge { min-width: 22px; height: 22px; background: var(--blue); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+  .faq-question { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+  .faq-chevron { color: var(--muted); font-size: 12px; margin-left: auto; transition: transform .2s; flex-shrink: 0; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-a { display: none; padding: 10px 14px 14px 46px; font-size: 13px; color: var(--text); background: var(--grey); border-top: 1px solid var(--border); line-height: 1.7; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-a table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+  .faq-a th { background: var(--blue); color: #fff; padding: 6px 10px; text-align: left; font-weight: 600; }
+  .faq-a td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  .faq-a tr:last-child td { border-bottom: none; }
+  .faq-a tr:nth-child(even) td { background: #fff; }
+  .faq-a ul { margin: 6px 0 0 14px; }
+  .faq-a li { margin-bottom: 3px; }
+  .faq-a .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin: 2px 2px 2px 0; }
+
+  /* ── Footer ── */
+  .footer { text-align: center; padding: 20px; color: var(--muted); font-size: 11px; border-top: 1px solid var(--border); margin-top: 10px; }
+
+  /* ── Responsive (tablet / mobile) ── */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 768px) {
+    .header { padding: 16px 20px; flex-wrap: wrap; gap: 10px; }
+    .header-badge { margin-left: 0; }
+    .container { padding: 18px 12px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .col-span-2 { grid-column: span 1; }
+    .card { padding: 16px 16px; }
+    table { font-size: 12px; }
+    th, td { padding: 7px 8px; }
+    .pay-timeline { flex-wrap: wrap; gap: 16px 10px; }
+    .pay-step { flex: 1 1 40%; }
+    .pay-step::after { display: none; }
+    .ot-label { width: 100px; font-size: 11px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 480px) {
+    body { font-size: 13px; }
+    .header-logo { font-size: 22px; }
+    .header-text h1 { font-size: 16px; }
+    .header-text p { font-size: 11px; }
+    .header-badge { font-size: 11px; padding: 5px 12px; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .stat-val { font-size: 20px; }
+    .card-title { font-size: 12px; }
+    table { font-size: 11px; }
+    th, td { padding: 6px 7px; }
+    .contact-item { flex-wrap: wrap; }
+    .contact-num { width: 100%; padding-left: 28px; }
+  }
+</style>
+
+<!--[if gte mso 9]><xml>
+<mso:CustomDocumentProperties>
+<mso:_dlc_DocId msdt:dt="string">M7AD5DXWA54W-1745450731-162</mso:_dlc_DocId>
+<mso:_dlc_DocIdItemGuid msdt:dt="string">9be0d7e0-171d-4108-a222-b4147eb1597d</mso:_dlc_DocIdItemGuid>
+<mso:_dlc_DocIdUrl msdt:dt="string">https://sonion.sharepoint.com/departments/hr/vn/_layouts/15/DocIdRedir.aspx?ID=M7AD5DXWA54W-1745450731-162, M7AD5DXWA54W-1745450731-162</mso:_dlc_DocIdUrl>
+</mso:CustomDocumentProperties>
+</xml><![endif]-->
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">SONION<span>.</span>VN</div>
+  <div class="header-text">
+    <h1>Hướng dẫn Nhân viên Sản xuất Mới</h1>
+    <p>Orientation for New Operators — DL / Sonion Việt Nam I & II</p>
+  </div>
+  <div class="header-badge">📋 Trang 1 / 2</div>
+</div>
+
+<div class="container">
+
+  <!-- GIỚI THIỆU -->
+  <div class="section-header"><h2>🏭 Giới thiệu Công ty</h2></div>
+  <div class="card">
+    <div class="grid-4">
+      <div class="stat-box blue">
+        <div class="stat-val">2005</div>
+        <div class="stat-unit">Năm thành lập</div>
+        <div class="stat-desc">01/11/2005 — 100% vốn Đan Mạch</div>
+      </div>
+      <div class="stat-box teal">
+        <div class="stat-val">2</div>
+        <div class="stat-unit">Nhà máy</div>
+        <div class="stat-desc">Sonion Việt Nam I & II</div>
+      </div>
+      <div class="stat-box orange">
+        <div class="stat-val">3</div>
+        <div class="stat-unit">Sản phẩm chính</div>
+        <div class="stat-desc">Receiver · Microphone · MMD</div>
+      </div>
+      <div class="stat-box green">
+        <div class="stat-val">🌍</div>
+        <div class="stat-unit">Tầm nhìn</div>
+        <div class="stat-desc">"Chúng ta giúp thế giới lắng nghe"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CA LÀM VIỆC -->
+  <div class="section-header"><h2>🕐 Ca Sản xuất</h2></div>
+  <div class="card">
+    <div class="grid-3">
+      <div class="shift-card ca1">
+        <div class="shift-name">CA 1 (Ca I)</div>
+        <div class="shift-time">06:00 – 14:00</div>
+        <div class="shift-break">⏸ Nghỉ giải lao: 30 phút</div>
+      </div>
+      <div class="shift-card ca2">
+        <div class="shift-name">CA 2 (Ca II)</div>
+        <div class="shift-time">14:00 – 22:00</div>
+        <div class="shift-break">⏸ Nghỉ giải lao: 30 phút</div>
+      </div>
+      <div class="shift-card ca3">
+        <div class="shift-name">CA 3 (Ca III) — Ca đêm</div>
+        <div class="shift-time">22:00 – 06:00</div>
+        <div class="shift-break">⏸ Nghỉ giải lao: 45 phút</div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:16px">
+      🧹 <strong>Phòng sạch:</strong> Cộng thêm 5 phút nghỉ để thay đồng phục. &nbsp;|&nbsp;
+      ⚠️ Không được đến sớm hoặc ở lại trễ quá <strong>35 phút</strong> nếu không có OT.
+    </div>
+  </div>
+
+  <!-- LƯƠNG & PHÚC LỢI -->
+  <div class="section-header"><h2>💰 Lương & Phúc lợi</h2></div>
+  <div class="grid-2">
+
+    <!-- Lịch thanh toán -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📅</span> Lịch Thanh Toán Hàng Tháng</div>
+      <div class="pay-timeline">
+        <div class="pay-step">
+          <div class="pay-dot blue">1</div>
+          <div class="pay-day">Ngày 1</div>
+          <div class="pay-label">Bắt đầu kỳ lương</div>
+        </div>
+        <div class="pay-step">
+          <div class="pay-dot orange">20</div>
+          <div class="pay-day">Ngày 20</div>
+          <div class="pay-label">Tạm ứng</div>
+          <div class="pay-amount">1.200.000 đ</div>
+        </div>
+        <div class="pay-step">
+          <div class="pay-dot blue">31</div>
+          <div class="pay-day">Cuối tháng</div>
+          <div class="pay-label">Chốt công</div>
+        </div>
+        <div class="pay-step">
+          <div class="pay-dot green">05</div>
+          <div class="pay-day">Ngày 5</div>
+          <div class="pay-label">Lương chính (tháng sau)</div>
+          <div class="pay-amount">Vietcombank</div>
+        </div>
+      </div>
+      <div class="note">💡 Tạm ứng ngày 20 yêu cầu ≥ 9 ngày công từ ngày 1–15 tháng đó.</div>
+      <div style="margin-top:10px;padding:9px 12px;background:#FEF2F2;border-radius:8px;font-size:12px;color:#7F1D1D">
+        ⚠️ <strong>Nhân viên mới — tháng đầu tiên:</strong> Không có tạm ứng.<br>
+        • Vào làm ngày <strong>1–24</strong>: nhận lương tháng đầu vào ngày 5 tháng sau.<br>
+        • Vào làm từ ngày <strong>25 trở đi</strong>: nhận lương tháng đầu vào kỳ lương của <strong>tháng thứ hai tiếp theo</strong>.
+      </div>
+    </div>
+
+    <!-- Phụ cấp & Thưởng -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎁</span> Phụ cấp & Thưởng (Operator)</div>
+      <table>
+        <thead><tr><th>Khoản</th><th>Mức</th><th>Điều kiện</th></tr></thead>
+        <tbody>
+          <tr><td>Trợ cấp sinh hoạt</td><td><strong>400.000 đ</strong>/tháng</td><td>Tất cả nhân viên</td></tr>
+          <tr><td>Quà lễ / sinh nhật</td><td><strong>200.000 đ</strong>/dịp</td><td>Tất cả nhân viên</td></tr>
+          <tr><td>Thưởng chuyên cần</td><td><strong>500.000 đ</strong>/tháng</td><td>Làm việc đủ đến cuối tháng</td></tr>
+          <tr><td>Thưởng năng suất</td><td>Tối đa <strong>~1.355.632 đ</strong>/tháng</td><td>Tính từ ngày bắt đầu làm việc (kể cả thử việc); Yield & Productivity</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- OT & TĂNG LƯƠNG -->
+  <div class="grid-2" style="margin-top:20px">
+
+    <!-- Tỷ lệ OT -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⏰</span> Tỷ lệ Lương Tăng Ca (OT)</div>
+      <div class="ot-bar">
+        <div class="ot-label">Ngày thường</div>
+        <div class="ot-track"><div class="ot-fill p150">150%</div></div>
+      </div>
+      <div class="ot-bar">
+        <div class="ot-label">Ngày nghỉ hàng tuần</div>
+        <div class="ot-track"><div class="ot-fill p200">200%</div></div>
+      </div>
+      <div class="ot-bar">
+        <div class="ot-label">Ngày lễ</div>
+        <div class="ot-track"><div class="ot-fill p300">300%</div></div>
+      </div>
+      <div class="ot-bar">
+        <div class="ot-label">Ca đêm (22:00–06:00)</div>
+        <div class="ot-track"><div class="ot-fill p150" style="background:#6366F1">150%</div></div>
+      </div>
+      <div style="margin:8px 0;padding:9px 12px;background:#EDE9FE;border-radius:8px;font-size:12px;color:#5B21B6">
+        🌙 <strong>Lương ca đêm = 150%</strong> — tức là bạn nhận thêm <strong>50%</strong> so với lương bình thường. Sonion trả cao hơn quy định Luật Lao động (luật yêu cầu tối thiểu +30%).
+      </div>
+      <div class="note">⚠️ Tối thiểu 1 giờ/ngày thường · Tối đa 4 giờ/ngày thường · 12 giờ/ngày nghỉ</div>
+    </div>
+
+    <!-- Xét tăng lương -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📈</span> Xét Tăng Lương & Nâng Bậc (3 đợt/năm)</div>
+      <table>
+        <thead><tr><th>Đợt</th><th>Tháng</th><th>Điều kiện</th></tr></thead>
+        <tbody>
+          <tr><td>Tăng lương hàng năm</td><td><strong>Tháng 1</strong></td><td>Vào trước 01/10 năm trước</td></tr>
+          <tr><td>Nâng bậc OP1 → OP2</td><td><strong>T4 & T10</strong></td><td>Tối thiểu 4 tháng thâm niên</td></tr>
+          <tr><td>Nâng bậc OP2 → OP3</td><td><strong>T4 & T10</strong></td><td>Tối thiểu 12 tháng thâm niên</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px">TIÊU CHÍ ĐÁNH GIÁ (từ 01/01/2025)</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span class="tag tag-blue">Kỷ luật 40%</span>
+          <span class="tag tag-orange">Kaizen / Quality Star 30%</span>
+          <span class="tag tag-green">Chuyên cần 20%</span>
+          <span class="tag" style="background:#F3E8FF;color:#7C3AED">Tổ chức 10%</span>
+        </div>
+      </div>
+      <div class="note">🚫 Đang bị xử lý kỷ luật → không được xét tăng lương.</div>
+      <div class="note">💰 Phụ thuộc vào ngân sách tại thời điểm.</div>
+    </div>
+  </div>
+
+  <!-- NGHỈ PHÉP & BẢO HIỂM -->
+  <div class="section-header"><h2>🌴 Ngày nghỉ & Bảo hiểm</h2></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="icon">📆</span> Phép năm & Ngày lễ</div>
+      <div class="grid-2" style="gap:12px;margin-bottom:14px">
+        <div class="stat-box green" style="text-align:left;padding:12px">
+          <div class="stat-val" style="font-size:28px">12</div>
+          <div class="stat-unit">ngày phép năm</div>
+          <div class="stat-desc">+1 ngày mỗi 3 năm thâm niên</div>
+        </div>
+        <div class="stat-box blue" style="text-align:left;padding:12px">
+          <div class="stat-val" style="font-size:28px">11</div>
+          <div class="stat-unit">ngày lễ có lương</div>
+          <div class="stat-desc">Tết Dương · Tết Âm · 30/4 · 1/5 · 2/9 · Giỗ tổ</div>
+        </div>
+      </div>
+      <div class="note">🔄 Chuyển tối đa <strong>3 ngày</strong> phép sang năm sau — phải dùng trước 01/04.</div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">🏥</span> Bảo hiểm Bắt buộc</div>
+      <table>
+        <thead><tr><th>Loại BH</th><th>Nhân viên đóng</th><th>Công ty đóng</th></tr></thead>
+        <tbody>
+          <tr><td>BHXH</td><td>8%</td><td>17,5%</td></tr>
+          <tr><td>BHYT</td><td>1,5%</td><td>3%</td></tr>
+          <tr><td>BHTN</td><td>1%</td><td>1%</td></tr>
+          <tr><td style="font-weight:700">Tổng</td><td><strong>10,5%</strong></td><td><strong>21,5%</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="note">✅ Tham gia BHXH + BHYT ngay từ <strong>tháng thử việc đầu tiên</strong>.</div>
+    </div>
+  </div>
+
+  <!-- KỶ LUẬT & LIÊN HỆ -->
+  <div class="section-header"><h2>⚖️ Kỷ luật & Liên hệ HR</h2></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="icon">🚦</span> 4 Mức Xử lý Kỷ luật</div>
+      <div class="disc-row"><div class="disc-badge disc-A">A</div><div class="disc-text">Khiển trách + thi hành <strong>1 tháng</strong></div></div>
+      <div class="disc-row"><div class="disc-badge disc-B">B</div><div class="disc-text">Khiển trách + hoãn tăng lương <strong>3 tháng</strong></div></div>
+      <div class="disc-row"><div class="disc-badge disc-C">C</div><div class="disc-text">Khiển trách + hoãn tăng lương <strong>6 tháng</strong></div></div>
+      <div class="disc-row"><div class="disc-badge disc-D">D</div><div class="disc-text"><strong>Sa thải</strong></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">📞</span> Liên hệ HR</div>
+      <div class="contact-item"><span class="contact-icon">👥</span><span class="contact-topic">Tuyển dụng & hợp đồng thử việc</span><span class="contact-num">028 3736 2019 / 0903 345 921</span></div>
+      <div class="contact-item"><span class="contact-icon">🏥</span><span class="contact-topic">Y tế – Phòng sữa mẹ</span><span class="contact-num">028 3736 2483</span></div>
+      <div class="contact-item"><span class="contact-icon">📄</span><span class="contact-topic">Hợp đồng chính thức, bảo hiểm & lương</span><span class="contact-num">028 3736 2018 / 028 3736 2021 / 028 3736 2105</span></div>
+    </div>
+  </div>
+
+  <!-- LIÊN HỆ THEO VẤN ĐỀ CỤ THỂ -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-title"><span class="icon">🧭</span> Liên hệ theo từng vấn đề cụ thể</div>
+    <table>
+      <tr><th>Hạng mục</th><th>Chi tiết</th><th>Người liên hệ</th></tr>
+      <tr><td>Đồng phục</td><td>Nhận/mua đồng phục, thu đồng phục khi nghỉ việc; mua thêm áo cam, giày, áo smock, ổ khóa; vấn đề tủ phòng sạch</td><td>Trợ lý sản xuất</td></tr>
+      <tr><td>Hệ thống ESD</td><td>Thông tin liên quan đến hệ thống ESD</td><td>Trợ lý sản xuất</td></tr>
+      <tr><td>Giấy tờ nghỉ ốm / khám thai</td><td>Giấy tờ BHXH, Giấy 28 tuần điều chỉnh chế độ thai sản; phép nghỉ cưới, nghỉ tang, mừng đoàn viên sinh con, thăm bệnh đoàn viên</td><td>Trưởng nhóm</td></tr>
+      <tr><td>Giấy xác minh đi sớm/về trễ, OT, kỷ luật</td><td>Giấy xác nhận giờ làm bất thường, OT, Feedback Form, Field Report</td><td>Trưởng ca</td></tr>
+      <tr><td>Locker</td><td>Tủ hư hỏng, cần đổi/sửa, mất chìa khóa cần cấp lại, quên chìa khóa cần mở trong ngày</td><td>Nhân viên dịch vụ bộ phận sản xuất</td></tr>
+      <tr><td>Vấn đề khác</td><td>Sản lượng, chất lượng, quy định công ty...</td><td>Trưởng nhóm, Trưởng ca</td></tr>
+    </table>
+  </div>
+
+  <!-- QUY ĐỊNH LÀM VIỆC -->
+  <div class="card" style="margin-top:20px;border-left:4px solid var(--orange)">
+    <div class="card-title"><span class="icon">📋</span> Quy định Làm việc — Cần nắm rõ</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#FEF9C3;border-radius:8px">
+        <div style="font-size:20px;flex-shrink:0">📅</div>
+        <div><strong>Không làm việc 7 ngày liên tục</strong> — Sau khi làm đủ 6 ngày, bắt buộc phải nghỉ ít nhất 1 ngày.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#FEF3E8;border-radius:8px">
+        <div style="font-size:20px;flex-shrink:0">🕐</div>
+        <div><strong>Không đến sớm hơn 35 phút hoặc ở lại trễ hơn 35 phút</strong> vì lý do cá nhân — trừ khi có tăng ca được phê duyệt.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#EAF6EE;border-radius:8px">
+        <div style="font-size:20px;flex-shrink:0">👁️</div>
+        <div><strong>Luôn chấm công</strong> khi đến nhà máy trong bất kỳ trường hợp nào.</div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#F3E8FF;border-radius:8px">
+        <div style="font-size:20px;flex-shrink:0">📵</div>
+        <div>Không dùng điện thoại · Không ăn uống · Không ngủ trong khu vực làm việc. <strong>Mặc đồng phục đầy đủ · Đeo thẻ · Giày xám chỉ dùng trong nhà máy.</strong></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 12px;background:#E0F5F7;border-radius:8px;grid-column:span 2">
+        <div style="font-size:20px;flex-shrink:0">🧴</div>
+        <div><strong>Mang theo bình nước cá nhân</strong> theo kích thước tiêu chuẩn của công ty.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- FAQ NHÂN VIÊN MỚI -->
+  <div class="section-header"><h2>❓ Câu hỏi thường gặp — Nhân viên mới</h2></div>
+  <div class="grid-2">
+
+    <!-- Cột trái -->
+    <div>
+      <div class="faq-group">
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">💻 Hệ thống & Công cụ</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tìm tài liệu và thông tin nội bộ ở đâu?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Nhu cầu</th><th>Đường dẫn</th></tr>
+              <tr><td>Chính sách, tài liệu Nhân sự</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/SitePages/HomePage.aspx" target="_blank">HR VN — Home Page</a></td></tr>
+              <tr><td>Đào tạo, Learning &amp; Development</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/lndvn1/SitePages/Home1.aspx" target="_blank">L&amp;D VN — Home</a></td></tr>
+              <tr><td>Tuyển dụng, vị trí đang mở</td><td><a href="https://sonion.talent.vn/" target="_blank">Sonion Careers</a></td></tr>
+              <tr><td>Dịch vụ canteen, xe đưa rước</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/hrservices/SitePages/Home.aspx" target="_blank">Factory Service</a></td></tr>
+              <tr><td>Org chart, JD, thông báo, báo cáo HR</td><td><a href="https://sonion.sharepoint.com/departments/hr/vn/SitePages/HomePage.aspx" target="_blank">HR VN — Home Page</a></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Hệ thống Cadena là gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Cadena là hệ thống quản lý nhân sự của Sonion, dùng để:
+            <ul>
+              <li>Xem và kiểm tra <strong>bảng chấm công</strong> hàng ngày</li>
+              <li>Nộp và hủy <strong>đơn nghỉ phép</strong></li>
+              <li>Xem <strong>phiếu lương</strong> hàng tháng</li>
+              <li>Nộp <strong>đơn thôi việc</strong></li>
+            </ul>
+            <br><strong>Truy cập:</strong> cadena.sonion.com/Login.aspx<br>
+            <strong>Nhân viên DL:</strong> Dùng <strong>máy trạm dọc hành lang</strong> hoặc <strong>trên điện thoại, đăng nhập vào Cadena wifi</strong> trong nhà máy.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Mật khẩu Cadena lấy ở đâu? Không nhận được thì làm sao?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            HR sẽ cấp mật khẩu ban đầu khi vào làm. Nếu chưa nhận được, tự cấp lại theo 3 bước:
+            <ol style="margin:8px 0 0 14px">
+              <li>Mở Google Chrome tại máy trạm hoặc Cadena trên điện thoại → <strong>cadena.sonion.com</strong> → chọn <strong>"Quên mật khẩu"</strong></li>
+              <li>Nhập <strong>mã số nhân viên</strong> + <strong>mã xác thực</strong> → nhấn <strong>Gửi</strong></li>
+              <li>Nhận mật khẩu qua <strong>Slack</strong> hoặc <strong>Cổng Hỗ trợ Nhân sự → Cấp mật khẩu Cadena</strong></li>
+            </ol>
+            <div style="margin-top:8px;padding:7px 10px;background:var(--orange-lt);border-radius:6px;font-size:12px;color:#7B3A00">
+              ⚠️ Sau khi đăng nhập, đổi ngay sang mật khẩu cá nhân: <strong>chữ hoa + số + ký tự đặc biệt</strong> (!@#$%).<br>Vẫn không xử lý được → đến trực tiếp <strong>Phòng Nhân sự nhà máy</strong>.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Cổng Hỗ trợ Nhân sự là gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Cổng Hỗ trợ Nhân sự (HR Request Center) là nơi gửi các yêu cầu HR:
+            <ul>
+              <li>Thay đổi thông tin cá nhân, tài khoản ngân hàng</li>
+              <li>Đề nghị nhân sự (cấp giấy tờ, đăng ký người phụ thuộc...)</li>
+              <li>Thắc mắc lương, yêu cầu hành chính khác</li>
+            </ul>
+            <br>Truy cập qua <strong>Cadena</strong> hoặc <strong>Máy Trạm</strong> tại nhà máy.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Ứng dụng Slack là gì? Tôi có cần dùng không?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Slack</strong> là ứng dụng nhắn tin nội bộ — tương tự Zalo — dùng để nhận thông báo công ty, tin nhắn từ HR và thông báo tự động (đơn phép đã duyệt, câu hỏi đã được trả lời...).<br><br>
+            <strong>Cách gia nhập:</strong>
+            <ol style="margin:6px 0 0 14px">
+              <li>Vào trang <strong>Zalo Sonion VN</strong> → cuối trang chọn <strong>"Liên hệ Nhân sự"</strong></li>
+              <li>Chọn <strong>"Gia nhập Slack"</strong></li>
+              <li>Đăng ký bằng <strong>email cá nhân</strong> (Gmail, iCloud...)</li>
+            </ol>
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)">Gặp lỗi: chọn "Xử lý lỗi Slack" trên cùng trang Zalo.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi được yêu cầu làm ca linh hoạt — làm sao để xác nhận đồng ý?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Nếu được yêu cầu làm việc theo <strong>ca làm việc linh hoạt</strong>, bạn cần xác nhận đồng ý qua biểu mẫu điện tử <strong>"Đồng thuận với ca làm việc linh hoạt"</strong>.<br><br>
+            Nếu chưa nhận được đường dẫn (link) vào biểu mẫu:
+            <ol style="margin:6px 0 0 14px">
+              <li>Vào <strong>Cổng Hỗ trợ Nhân sự (HR Request Center)</strong></li>
+              <li>Chọn <strong>"Gửi yêu cầu cho Nhân sự / HR Helpdesk"</strong></li>
+              <li>Chọn mục cấp link vào ký <strong>Ca làm việc linh hoạt</strong></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">🍽️ Cơ sở vật chất & Phúc lợi tại chỗ</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Mã thẻ canteen là gì? Lấy ở đâu?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Mã thẻ canteen</strong> là mã định danh nhân viên Sonion dùng để sử dụng voucher điện tử tại canteen. Khi các phòng ban cấp voucher qua các chương trình như <strong>5S, Kaizen</strong>, hoặc các khoản trợ cấp (VD: độc hại), số tiền sẽ được chuyển vào mã thẻ canteen để sử dụng.<br><br>
+            <strong>Cách lấy mã thẻ:</strong>
+            <ol style="margin:6px 0 0 14px">
+              <li>Vào <strong>Cổng Hỗ trợ Nhân sự (HR Request Center)</strong></li>
+              <li>Chọn mục <strong>"Xem số dư thẻ canteen / Canteen card balance"</strong></li>
+              <li>Nhấn nút <strong>"Lấy mã thẻ canteen / Get the canteen card"</strong></li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Canteen Sonion phục vụ những gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Nhà ăn Sonion phục vụ bữa ăn hằng ngày với thực đơn đa dạng và thay đổi liên tục:
+            <ul style="margin:6px 0 0 14px">
+              <li>Hơn <strong>600 món mặn</strong></li>
+              <li>Hơn <strong>200 món chay</strong></li>
+              <li><strong>63 món nước</strong> cùng nhiều món tráng miệng</li>
+            </ul>
+            Mỗi tháng có <strong>1 bữa ăn đặc biệt</strong> dành cho toàn thể nhân viên.
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)">Góp ý: điền phiếu tại "Hộp thư góp ý" ở cửa ra vào nhà ăn, hoặc gọi hotline 0909 024 804.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Phòng Y tế và Phòng Sữa mẹ ở đâu? Dùng để làm gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Phòng Y Tế:</strong> cung cấp các loại thuốc cơ bản (ho, cảm, sốt...) khi cần thiết. Thuốc theo toa bác sĩ vui lòng tự chuẩn bị — Phòng Y Tế không hỗ trợ cấp phát loại này.<br><br>
+            <strong>Phòng Sữa Mẹ:</strong> dành cho nhân viên nữ có con nhỏ dưới 1 tuổi khi quay lại làm việc sau thai sản. Quyền lợi: sử dụng phòng + nhận 1 bình sữa/nhân viên. Đăng ký tại Phòng Nhân sự để được hướng dẫn.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột phải -->
+    <div>
+      <div class="faq-group">
+        <div class="faq-group-title">⏰ Công việc & Thời gian</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi được trả lương khi nào?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <ul>
+              <li><strong>Lương chính:</strong> Ngày <strong>5 tháng sau</strong> — tài khoản Vietcombank hoặc HSBC</li>
+              <li><strong>Tạm ứng:</strong> Ngày <strong>20 hàng tháng</strong> — 1.200.000 đ nếu làm đủ 9 ngày công từ ngày 1–15</li>
+              <li>Xem phiếu lương điện tử trên <strong>Cadena</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi được hưởng những phúc lợi gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Phúc lợi</th><th>Mức</th></tr>
+              <tr><td>BHXH + BHYT + BHTN</td><td>Từ tháng thử việc đầu tiên</td></tr>
+              <tr><td>Bảo hiểm tai nạn 24/7</td><td>Toàn bộ nhân viên</td></tr>
+              <tr><td>Phụ cấp sinh hoạt</td><td><strong>400.000 đ</strong>/tháng</td></tr>
+              <tr><td>Thưởng chuyên cần</td><td><strong>500.000 đ</strong>/tháng</td></tr>
+              <tr><td>Quà lễ / sinh nhật</td><td><strong>200.000 đ</strong>/dịp</td></tr>
+              <tr><td>Du lịch hàng năm</td><td>1 lần/năm</td></tr>
+              <tr><td>Phép năm</td><td>12 ngày (+1 mỗi 3 năm thâm niên)</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Tôi cần mặc gì khi đi làm?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <ul>
+              <li>Mặc <strong>đồng phục</strong> đầy đủ do công ty cấp phát</li>
+              <li>Đeo <strong>thẻ nhân viên</strong> ở vị trí dễ nhìn</li>
+              <li>Mang <strong>giày bảo hộ ESD (giày xám)</strong> — chỉ dùng trong nhà máy</li>
+              <li>Phòng sạch: mặc thêm smock, mũ và dụng cụ theo quy định</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Nhân viên mới có được thưởng gì khi vào làm không?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Có. Nhân viên sản xuất (Operator) nhận việc lần đầu tại Sonion (hoặc nhân viên cũ quay lại sau khi đã nghỉ việc từ 180 ngày trở lên) nhận thưởng theo 3 mốc, mức thưởng tùy nhóm công việc:
+            <table style="margin-top:8px">
+              <tr><th>Mốc</th><th>Nhóm nhìn kính<br><span style="font-weight:400;font-size:11px">(từ 01/06/2026)</span></th><th>Nhóm không nhìn kính<br><span style="font-weight:400;font-size:11px">(từ 15/06/2026)</span></th></tr>
+              <tr><td>Đủ 1 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td>Đủ 2 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td>Đủ 3 tháng làm việc</td><td><strong>1.500.000 đ</strong></td><td><strong>1.000.000 đ</strong></td></tr>
+              <tr><td><strong>Tổng / 3 tháng</strong></td><td><strong>4.500.000 đ</strong></td><td><strong>3.000.000 đ</strong></td></tr>
+            </table>
+            <div style="margin-top:8px;padding:7px 10px;background:var(--blue-lt);border-radius:6px;font-size:12px;color:#1E3A5F">
+              📌 <strong>Điều kiện:</strong> Đạt yêu cầu thử việc; không nghỉ quá 2 ngày trong tháng làm việc đầu tiên; tổng số ngày nghỉ không quá 3 ngày trong 3 tháng đầu (không tính nghỉ do công ty sắp xếp hoặc bất khả kháng).
+            </div>
+            <div style="margin-top:6px;padding:7px 10px;background:var(--blue-lt);border-radius:6px;font-size:12px;color:#1E3A5F">
+              📌 <strong>Lịch nhận thưởng tháng 1</strong> (N = tháng nhận việc): vào làm ngày 01–10 → nhận ngày 12 tháng N+1; ngày 11–18 → nhận ngày 20 tháng N+1; ngày 19–31 → nhận ngày 05 tháng N+2. Thưởng tháng 2 & 3 trả cùng kỳ lương tương ứng.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Thẻ BHYT của tôi có hiệu lực từ bao giờ?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <div style="padding:8px 10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green);margin-bottom:10px">
+              ✅ <strong>Chậm nhất 25 ngày kể từ ngày vào làm</strong>, bạn sẽ có thẻ BHYT hiển thị trên VssID.
+            </div>
+            Điều kiện để có thẻ ngay trong tháng đầu: tổng số ngày nghỉ không hưởng lương trong tháng (= công chuẩn − số ngày hưởng lương, tính từ ngày vào làm) phải <strong>dưới 14 ngày</strong>.
+            <div style="margin-top:8px;font-size:12px;color:var(--muted)">
+              Không đáp ứng đủ → tham gia BHXH/BHYT/BHTN từ tháng sau, thẻ có hiệu lực từ <strong>đầu tháng tiếp theo</strong>.<br>
+              Kiểm tra thẻ: mở <strong>VssID</strong> → "Thẻ BHYT".
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Các loại thu nhập nào tính thuế TNCN? Nhân viên DL có phải đóng không?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <div style="margin-bottom:8px"><strong style="color:var(--green)">✅ Không tính thuế (miễn hoàn toàn):</strong></div>
+            <table>
+              <tr><th>Khoản</th><th>Ghi chú</th></tr>
+              <tr><td>Toàn bộ tiền OT</td><td>Luật 109/2025/QH15</td></tr>
+              <tr><td>Toàn bộ tiền lương ca đêm</td><td>Luật 109/2025/QH15</td></tr>
+              <tr><td>Phụ cấp cơm</td><td>Miễn thuế ≤ 1.200.000đ/tháng</td></tr>
+              <tr><td>Phụ cấp điện thoại (nếu có)</td><td>Theo hạn mức</td></tr>
+            </table>
+            <div style="margin:10px 0 6px"><strong style="color:var(--orange)">⚠️ Tính thuế:</strong> Lương cơ bản + thưởng + phụ cấp sinh hoạt — sau đó trừ thêm:</div>
+            <ul>
+              <li>BHXH nhân viên đóng: <strong>10,5%</strong> lương</li>
+              <li>Giảm trừ bản thân: <strong>15.500.000 đ/tháng</strong></li>
+              <li>Giảm trừ người phụ thuộc: <strong>+6.200.000 đ/người</strong></li>
+            </ul>
+            <div style="margin-top:10px;padding:8px 10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green)">
+              💡 <strong>Đa số nhân viên DL (OP1–OP3):</strong> Lương 5,9–9,7 triệu → sau BHXH và giảm trừ bản thân 15,5 triệu → <strong>thu nhập tính thuế = 0 → không đóng thuế TNCN.</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="faq-group">
+        <div class="faq-group-title">⚖️ Nội quy & Kỷ luật</div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Những điều cần biết trong khu vực làm việc?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <ul>
+              <li>❌ Không dùng điện thoại cá nhân trong khu sản xuất → ra <strong>Calling Place</strong></li>
+              <li>❌ Không ăn uống, ngủ hoặc chơi game trong khu làm việc</li>
+              <li>❌ Không đưa tài sản công ty ra ngoài</li>
+              <li>✅ Khóa tủ locker cẩn thận, không để đồ vật có giá trị trên 50.000 đ, không được phép đổi tủ với nhân viên khác</li>
+              <li>✅ Hút thuốc trong khu vực và thời gian được quy định</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Bị kỷ luật thì ảnh hưởng gì?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <table>
+              <tr><th>Mức</th><th>Hình thức</th></tr>
+              <tr><td><strong>A</strong></td><td>Khiển trách + thi hành 1 tháng</td></tr>
+              <tr><td><strong>B</strong></td><td>Khiển trách + hoãn tăng lương 3 tháng</td></tr>
+              <tr><td><strong>C</strong></td><td>Khiển trách + hoãn tăng lương 6 tháng</td></tr>
+              <tr><td><strong>D</strong></td><td>Sa thải</td></tr>
+            </table>
+            <br>Nhân viên đang bị kỷ luật <strong>không được xét tăng lương</strong> và có thể giảm/mất thưởng.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- CHẤM CÔNG FAQ -->
+  <div class="section-header"><h2>🕐 Chấm công — Câu hỏi thường gặp</h2></div>
+  <div class="grid-2">
+
+    <!-- Cột trái -->
+    <div>
+      <div class="faq-group">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Quét mặt không nhận ra / máy báo lỗi thì làm sao?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Thử lần lượt các bước sau:
+            <ul style="margin:6px 0 0 14px">
+              <li>Tháo kính</li>
+              <li>Lau mồ hôi trên mặt</li>
+              <li>Vén tóc mái và 2 bên tóc</li>
+              <li>Chọn máy khác ở vị trí có ánh sáng tốt hơn</li>
+            </ul>
+            <div style="margin-top:8px">Vẫn không được → báo ngay <strong>Shift Leader / Manager trực tiếp</strong> để điều chỉnh giờ công thiếu trên Cadena.</div>
+            <div style="margin-top:6px;padding:7px 10px;background:var(--blue-lt);border-radius:6px;font-size:12px;color:#1E3A5F">
+              💡 Khuôn mặt thay đổi lớn (phẫu thuật, ngoại hình...) → đến <strong>Phòng Nhân sự</strong> để đăng ký lại dữ liệu khuôn mặt.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Đến đúng giờ nhưng hệ thống ghi trễ — tính thế nào?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            Nếu hệ thống ghi trễ, liên hệ <strong>Trưởng ca</strong> để Trưởng ca báo với <strong>Nhân sự</strong>. Nhân viên không được phép đi trễ.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Nghỉ giữa ca có cần quét mặt ra vào không?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Không.</strong> Chỉ cần quét <strong>1 lần lúc vào</strong> và <strong>1 lần lúc ra</strong>. Không quét thêm để tránh hệ thống tính nhầm giờ công.
+            <div style="margin-top:8px;padding:7px 10px;background:#FEF2F2;border-radius:6px;font-size:12px;color:#7F1D1D">
+              ⚠️ Phải quét <strong>đúng máy</strong>: máy <strong>VÀO</strong> khi bắt đầu ca, máy <strong>RA</strong> khi kết thúc ca. Quét nhầm máy → tính sai công.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột phải -->
+    <div>
+      <div class="faq-group">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Nghỉ phép / nghỉ ốm thì có cần quét mặt không?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <strong>Không.</strong> Khi nghỉ bất kỳ loại nào, bạn phải thực hiện <strong>quy trình xin nghỉ trên Cadena</strong>. Tiền lương được tính dựa trên đơn xin nghỉ đã duyệt — không cần quét mặt trong ngày nghỉ đó.
+            <div style="margin-top:8px;padding:7px 10px;background:var(--green-lt);border-radius:6px;font-size:12px;color:var(--green)">
+              ✅ Nộp đơn nghỉ đúng quy trình = không bị tính vắng mặt và không bị trừ công.
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggle(this)">
+            <div class="faq-badge">Q</div>
+            <div class="faq-question">Điện mất hoặc máy chấm công hỏng — làm sao ghi nhận giờ làm?</div>
+            <div class="faq-chevron">▼</div>
+          </div>
+          <div class="faq-a">
+            <ul style="margin:0 0 0 14px">
+              <li>Công ty luôn có <strong>thông báo mất điện trước</strong> kèm phương án xử lý.</li>
+              <li><strong>1 máy bị mất điện</strong> → đến máy khác. Công ty có <strong>hơn 10 máy vào</strong> và <strong>hơn 10 máy ra</strong>.</li>
+              <li><strong>Toàn bộ hệ thống hỏng</strong> → liên hệ ngay <strong>Quản lý trực tiếp</strong> để họ xử lý công trên Cadena cho bạn <strong>ngay trong ngày hôm đó</strong>.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div class="footer">Sonion Việt Nam — HR Wiki · 01-Onboarding · Trang 1: Hướng dẫn Nhân viên DL Mới · Cập nhật 2026</div>
+
+<script>
+function toggle(el) {
+  const item = el.closest('.faq-item');
+  item.classList.toggle('open');
+}
+</script>
+</body>
+</html>
